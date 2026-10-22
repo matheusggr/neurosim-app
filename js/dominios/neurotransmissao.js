@@ -1,12 +1,12 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import '../dominios/psicofarmacos.js?v=12.66.0';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { TARGETS_CANON_VERSION } from '../targets.js?v=12.66.0';
-import { receptoresDoSistema, systemsData } from '../data.js?v=12.66.0';
-import { drugBindingAffinities, farmacoAcoplado } from '../dominios/psicofarmacos.js?v=12.66.0';
-import { store } from '../store.js?v=12.66.0';
-import { escapeHtml } from '../features.js?v=12.66.0';
-import { playBioTone, relogioSimulacao } from '../engine.js?v=12.66.0';
-import { clockDelta } from '../render3d.js?v=12.66.0';
+import '../dominios/psicofarmacos.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { TARGETS_CANON_VERSION } from '../targets.js?v=12.66.1';
+import { receptoresDoSistema, systemsData } from '../data.js?v=12.66.1';
+import { drugBindingAffinities, farmacoAcoplado } from '../dominios/psicofarmacos.js?v=12.66.1';
+import { store } from '../store.js?v=12.66.1';
+import { escapeHtml } from '../features.js?v=12.66.1';
+import { playBioTone, relogioSimulacao } from '../engine.js?v=12.66.1';
+import { clockDelta } from '../render3d.js?v=12.66.1';
 // ── fim dos módulos ──
 /*
  * DOMINIO NEUROTRANSMISSAO — um palco inteiro num arquivo so (decisao D3 do autor, "pastas por dominio").

@@ -1,10 +1,10 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import '../dominios/neuronio.js?v=12.66.0';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { canonicalTarget } from '../targets.js?v=12.66.0';
-import { MODO } from '../data.js?v=12.66.0';
-import { store } from '../store.js?v=12.66.0';
-import { escapeHtml } from '../features.js?v=12.66.0';
-import { playBioTone } from '../engine.js?v=12.66.0';
+import '../dominios/neuronio.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { canonicalTarget } from '../targets.js?v=12.66.1';
+import { MODO } from '../data.js?v=12.66.1';
+import { store } from '../store.js?v=12.66.1';
+import { escapeHtml } from '../features.js?v=12.66.1';
+import { playBioTone } from '../engine.js?v=12.66.1';
 // ── fim dos módulos ──
 /*
  * DOMINIO PSICOFARMACOS — um palco inteiro num arquivo so (decisao D3 do autor, "pastas por dominio").

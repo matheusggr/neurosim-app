@@ -6,24 +6,24 @@
 
 import {
     APP_VERSION, DOMINIOS, LEITURAS_CRUZADAS, MODO, SOURCES, ehCamadaDeSistema, semiologyCounts, systemsData
-} from './data.js?v=12.66.0';
-import { exportPatientStory } from './dominios/psicoeducacao.js?v=12.66.0';
+} from './data.js?v=12.66.1';
+import { exportPatientStory } from './dominios/psicoeducacao.js?v=12.66.1';
 import {
     resetHHParams, setHHParam, setIzhikevichCurrent, setIzhikevichType, toggleModelPanel
-} from './dominios/neuronio.js?v=12.66.0';
+} from './dominios/neuronio.js?v=12.66.1';
 import {
     KI_RECEPTORS, closeCrossTaperingModal, desprescreverSistema, drugBindingAffinities, drugTargetsExtra,
     onCrossTaperingOverlayClick, openCrossTaperingModal, pkPresetFromDrug, updateCrossTaperingCalculations,
     updateDosingRegimen
-} from './dominios/psicofarmacos.js?v=12.66.0';
+} from './dominios/psicofarmacos.js?v=12.66.1';
 import {
     dossierTargets, escolherSistema, ionParticles3D, molecularAdvancesData
-} from './dominios/neurotransmissao.js?v=12.66.0';
+} from './dominios/neurotransmissao.js?v=12.66.1';
 import {
     CIRCUIT_LAYER_UI, brainCircuitsData, canonicalSubTractsData, circuitTargets, drawBrainCircuits2D, nuclei2DFor,
     nucleiCatalog, pathologyProfilesData, tractsCatalog, ultimoLayoutRotulos, ultimosRotulos, ultimosTracos
-} from './dominios/circuitos.js?v=12.66.0';
-import { store } from './store.js?v=12.66.0';
+} from './dominios/circuitos.js?v=12.66.1';
+import { store } from './store.js?v=12.66.1';
 import {
     caseAnswer, caseApplyStep, caseGo, caseState, closeCase, closeExperimentsModal, closeSemiologyModal,
     copySceneLink, deleteSceneAt, escapeHtml, experiments, exportCasesJSON, exportExperimentsAnki, exportScenesJSON,
@@ -33,15 +33,15 @@ import {
     renderExperimentList, renderScenesList, renderSemiology, saveCurrentScene, savePlaylistPrefs, scenes,
     showTargetInConnectome, startRenameScene, storeScenes, toggleCameraOrbit, toggleCasePanel, toggleColorVisionMode,
     togglePresenterMode, toggleScenesPanel, updateSceneAt
-} from './features.js?v=12.66.0';
-import { toggleColorTheme, toggleSound } from './engine.js?v=12.66.0';
-import { marcador, renderInspector, renderUI } from './ui.js?v=12.66.0';
-import { renderer3D } from './render3d.js?v=12.66.0';
-import { setRenderPaused } from './render2d.js?v=12.66.0';
+} from './features.js?v=12.66.1';
+import { toggleColorTheme, toggleSound } from './engine.js?v=12.66.1';
+import { marcador, renderInspector, renderUI } from './ui.js?v=12.66.1';
+import { renderer3D } from './render3d.js?v=12.66.1';
+import { setRenderPaused } from './render2d.js?v=12.66.1';
 import {
     closeSourcesModal, closeSpotlightModal, dismissDisclaimer, onSpotlightKeyDown, onSpotlightOverlayClick,
     onSpotlightSearch, openSourcesModal, openSpotlightModal, selectSpotlightItem
-} from './main.js?v=12.66.0';
+} from './main.js?v=12.66.1';
 
 // Getters, não cópias: um binding importado é vivo, e 7 destes nomes são let (caseState, ionParticles3D, renderer3D, scenes, ultimoLayoutRotulos, ultimosRotulos, ultimosTracos) — quem lê window.nome tem de ver o valor de agora, não o do instante em que a ponte foi instalada.
 function instalarPonte() {

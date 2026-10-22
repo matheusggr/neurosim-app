@@ -1,12 +1,12 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import './dominios/circuitos.js?v=12.66.0';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { DOMINIOS, ESCALAS_DE_PROJECAO, MODO, dominioDaEscala, dominioDoModo } from './data.js?v=12.66.0';
-import { hhSolver } from './dominios/neuronio.js?v=12.66.0';
+import './dominios/circuitos.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { DOMINIOS, ESCALAS_DE_PROJECAO, MODO, dominioDaEscala, dominioDoModo } from './data.js?v=12.66.1';
+import { hhSolver } from './dominios/neuronio.js?v=12.66.1';
 import {
     CIRCUIT_FAMILIES, CIRCUIT_PRESETS, canonicalSubTractsData, modoDeVisaoDasCamadas, pathologyProfilesData
-} from './dominios/circuitos.js?v=12.66.0';
-import { renderUI } from './ui.js?v=12.66.0';
-import { scene3D } from './render3d.js?v=12.66.0';
+} from './dominios/circuitos.js?v=12.66.1';
+import { renderUI } from './ui.js?v=12.66.1';
+import { scene3D } from './render3d.js?v=12.66.1';
 // ── fim dos módulos ──
 /* NeuroSim Pro 3D — store.js. Gerado pela divisão da v12.0; a ordem de carga é definida em Simulador_Neuronio_Interativo.html.
    Scripts clássicos compartilham o escopo global: const/let/function de um arquivo são visíveis nos seguintes. */

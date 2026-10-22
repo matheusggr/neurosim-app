@@ -1,18 +1,18 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import './targets.js?v=12.66.0';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { TARGETS_CANON } from './targets.js?v=12.66.0';
-import { patientStoriesData } from './dominios/psicoeducacao.js?v=12.66.0';
-import { hhSolver } from './dominios/neuronio.js?v=12.66.0';
+import './targets.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { TARGETS_CANON } from './targets.js?v=12.66.1';
+import { patientStoriesData } from './dominios/psicoeducacao.js?v=12.66.1';
+import { hhSolver } from './dominios/neuronio.js?v=12.66.1';
 import {
     antidepressantsData, antipsychoticsData, drugBindingAffinities, moodAndAnxioData
-} from './dominios/psicofarmacos.js?v=12.66.0';
-import { biochemicalCyclesData, molecularAdvancesData, particlePool } from './dominios/neurotransmissao.js?v=12.66.0';
+} from './dominios/psicofarmacos.js?v=12.66.1';
+import { biochemicalCyclesData, molecularAdvancesData, particlePool } from './dominios/neurotransmissao.js?v=12.66.1';
 import {
     brainCircuitsData, canonicalSubTractsData, neurostimProtocolsData, nucleiCatalog, nucleiClinicalData,
     pathologyProfilesData, tractsCatalog
-} from './dominios/circuitos.js?v=12.66.0';
-import { experiments } from './features.js?v=12.66.0';
-import { scene3D } from './render3d.js?v=12.66.0';
+} from './dominios/circuitos.js?v=12.66.1';
+import { experiments } from './features.js?v=12.66.1';
+import { scene3D } from './render3d.js?v=12.66.1';
 // ── fim dos módulos ──
 /* NeuroSim Pro 3D — data.js. Gerado pela divisão da v12.0; a ordem de carga é definida em Simulador_Neuronio_Interativo.html.
    Scripts clássicos compartilham o escopo global: const/let/function de um arquivo são visíveis nos seguintes. */
@@ -20,7 +20,7 @@ import { scene3D } from './render3d.js?v=12.66.0';
 // 0. VERSÃO ÚNICA DO APLICATIVO
 //    (sincronizada com package.json, manifest e service worker por scripts/sync-version.mjs)
 // ==========================================
-const APP_VERSION = '12.66.0';
+const APP_VERSION = '12.66.1';
 const APP_BUILD_LABEL = 'O filtro é da camada';
 
 // =========================================================

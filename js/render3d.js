@@ -1,17 +1,17 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import './ui.js?v=12.66.0';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { systemsData } from './data.js?v=12.66.0';
+import './ui.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { systemsData } from './data.js?v=12.66.1';
 import {
     CLEFT_COMPONENT_INFO, buildSynapticCleft3D, camkiiGroup, cleft3DGroup, definirCleft3DGroup, postMembraneMesh,
     receptors3DGroup, showCleftTooltip, vesicles3D
-} from './dominios/neurotransmissao.js?v=12.66.0';
+} from './dominios/neurotransmissao.js?v=12.66.1';
 import {
     brain3DGroup, brain3DNucleiMeshes, buildWholeBrain3D, definirBrain3DGroup, hideConnectomeTooltip,
     showConnectomeTooltip
-} from './dominios/circuitos.js?v=12.66.0';
-import { registerEffect, store } from './store.js?v=12.66.0';
-import { cameraTween, updateCameraTween } from './features.js?v=12.66.0';
-import { playBioTone } from './engine.js?v=12.66.0';
+} from './dominios/circuitos.js?v=12.66.1';
+import { registerEffect, store } from './store.js?v=12.66.1';
+import { cameraTween, updateCameraTween } from './features.js?v=12.66.1';
+import { playBioTone } from './engine.js?v=12.66.1';
 // ── fim dos módulos ──
 /* NeuroSim Pro 3D — render3d.js. Gerado pela divisão da v12.0; a ordem de carga é definida em Simulador_Neuronio_Interativo.html.
    Scripts clássicos compartilham o escopo global: const/let/function de um arquivo são visíveis nos seguintes. */

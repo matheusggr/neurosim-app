@@ -1,10 +1,10 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import '../dominios/neurotransmissao.js?v=12.66.0';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import '../dominios/neurotransmissao.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
 import {
     CAMADA_DO_SISTEMA, CORES_DOS_SISTEMAS, TRACO_DO_CIRCUITO, clarearCor, ehCamadaDeSistema
-} from '../data.js?v=12.66.0';
-import { store } from '../store.js?v=12.66.0';
-import { fatorDeEscalaUI } from '../engine.js?v=12.66.0';
+} from '../data.js?v=12.66.1';
+import { store } from '../store.js?v=12.66.1';
+import { fatorDeEscalaUI } from '../engine.js?v=12.66.1';
 // ── fim dos módulos ──
 /*
  * DOMINIO CIRCUITOS — um palco inteiro num arquivo so (decisao D3 do autor, "pastas por dominio").

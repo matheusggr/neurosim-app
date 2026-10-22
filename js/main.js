@@ -1,34 +1,34 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import './render2d.js?v=12.66.0';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { TARGETS_CANON } from './targets.js?v=12.66.0';
-import { APP_BUILD_LABEL, APP_VERSION, ESCALAS_DE_PROJECAO, MODO, renderReferencesList } from './data.js?v=12.66.0';
-import { patientStoriesData } from './dominios/psicoeducacao.js?v=12.66.0';
-import { recalculateElectrophysiology, toggleModelPanel, updateOscilloscope } from './dominios/neuronio.js?v=12.66.0';
+import './render2d.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { TARGETS_CANON } from './targets.js?v=12.66.1';
+import { APP_BUILD_LABEL, APP_VERSION, ESCALAS_DE_PROJECAO, MODO, renderReferencesList } from './data.js?v=12.66.1';
+import { patientStoriesData } from './dominios/psicoeducacao.js?v=12.66.1';
+import { recalculateElectrophysiology, toggleModelPanel, updateOscilloscope } from './dominios/neuronio.js?v=12.66.1';
 import {
     antidepressantsData, antipsychoticsData, closeCrossTaperingModal, drugBindingAffinities, drugsForTarget,
     modeledTargetIds, moodAndAnxioData, openCrossTaperingModal, prescrever
-} from './dominios/psicofarmacos.js?v=12.66.0';
+} from './dominios/psicofarmacos.js?v=12.66.1';
 import {
     definirHoveredSynapseComponent, dossierByStep, molecularAdvancesData, onSynapseCanvasClick,
     onSynapseCanvasMouseMove
-} from './dominios/neurotransmissao.js?v=12.66.0';
+} from './dominios/neurotransmissao.js?v=12.66.1';
 import {
     canonicalSubTractsData, hideConnectomeTooltip, neurostimProtocolsData, nucleiClinicalData, onBrainCanvasClick,
     onBrainCanvasMouseMove, pathologyProfilesData
-} from './dominios/circuitos.js?v=12.66.0';
-import { store } from './store.js?v=12.66.0';
+} from './dominios/circuitos.js?v=12.66.1';
+import { store } from './store.js?v=12.66.1';
 import {
     allCases, applySceneFromHash, cameraByScale, caseApplyStep, caseGo, caseState, closeExperimentsModal,
     definirLastVisualScale3D, definirPresenterHintTimer, describeScene, escapeHtml, experiments, exportViewportPNG,
     initEditableCaption, loadSceneAt, openCase, openExperimentsModal, playlistStep, playlistToggle,
     presenterHintTimer, renderScenesList, restorePlaylistPrefs, restoreSession, scenes, toggleCameraOrbit,
     toggleCasePanel, togglePresenterMode, toggleScenesPanel
-} from './features.js?v=12.66.0';
-import { toggleColorTheme, toggleSound } from './engine.js?v=12.66.0';
-import { renderUI } from './ui.js?v=12.66.0';
-import { camera3D, init3D, renderer3D } from './render3d.js?v=12.66.0';
-import { masterRenderLoop, toggleRenderPaused } from './render2d.js?v=12.66.0';
-import { instalarPonte } from './ponte.js?v=12.66.0';
+} from './features.js?v=12.66.1';
+import { toggleColorTheme, toggleSound } from './engine.js?v=12.66.1';
+import { renderUI } from './ui.js?v=12.66.1';
+import { camera3D, init3D, renderer3D } from './render3d.js?v=12.66.1';
+import { masterRenderLoop, toggleRenderPaused } from './render2d.js?v=12.66.1';
+import { instalarPonte } from './ponte.js?v=12.66.1';
 instalarPonte();   // o window recebe o que os handlers inline e os checks chamam pelo nome
 // ── fim dos módulos ──
 

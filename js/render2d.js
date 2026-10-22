@@ -1,14 +1,14 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import './render3d.js?v=12.66.0';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { drawNeuron2D } from './dominios/neuronio.js?v=12.66.0';
+import './render3d.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { drawNeuron2D } from './dominios/neuronio.js?v=12.66.1';
 import {
     animateSynaptic3DVesicles, drawSynapse2D, initSynapticParticles, sinapseReageAoPA
-} from './dominios/neurotransmissao.js?v=12.66.0';
-import { drawBrainCircuits2D, update3DBrainTractsVisibility } from './dominios/circuitos.js?v=12.66.0';
-import { store } from './store.js?v=12.66.0';
-import { cameraOrbit, cameraTween, updateCameraOrbit, updateCameraTween } from './features.js?v=12.66.0';
-import { avancarRelogioSimulacao } from './engine.js?v=12.66.0';
-import { autoRotate3D, camera3D, controls3D, renderer3D, scene3D } from './render3d.js?v=12.66.0';
+} from './dominios/neurotransmissao.js?v=12.66.1';
+import { drawBrainCircuits2D, update3DBrainTractsVisibility } from './dominios/circuitos.js?v=12.66.1';
+import { store } from './store.js?v=12.66.1';
+import { cameraOrbit, cameraTween, updateCameraOrbit, updateCameraTween } from './features.js?v=12.66.1';
+import { avancarRelogioSimulacao } from './engine.js?v=12.66.1';
+import { autoRotate3D, camera3D, controls3D, renderer3D, scene3D } from './render3d.js?v=12.66.1';
 // ── fim dos módulos ──
 
 initSynapticParticles();

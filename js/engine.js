@@ -1,9 +1,9 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import './features.js?v=12.66.0';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { recalculateElectrophysiology } from './dominios/neuronio.js?v=12.66.0';
-import { registerEffect, store } from './store.js?v=12.66.0';
-import { persistSession } from './features.js?v=12.66.0';
-import { scene3D } from './render3d.js?v=12.66.0';
+import './features.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { recalculateElectrophysiology } from './dominios/neuronio.js?v=12.66.1';
+import { registerEffect, store } from './store.js?v=12.66.1';
+import { persistSession } from './features.js?v=12.66.1';
+import { scene3D } from './render3d.js?v=12.66.1';
 // ── fim dos módulos ──
 
 

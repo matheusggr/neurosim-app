@@ -1,30 +1,30 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import './engine.js?v=12.66.0';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { TARGETS_CANON, TARGETS_CANON_VERSION } from './targets.js?v=12.66.0';
-import { DOMINIOS, MODO, SOURCES, dominioDoModo, ehCamadaDeSistema, systemsData } from './data.js?v=12.66.0';
-import { renderPsicoeducacaoPanel } from './dominios/psicoeducacao.js?v=12.66.0';
-import { IZHIKEVICH_TYPES, calculateNernst, izhSolver, renderEquationsCard } from './dominios/neuronio.js?v=12.66.0';
+import './engine.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { TARGETS_CANON, TARGETS_CANON_VERSION } from './targets.js?v=12.66.1';
+import { DOMINIOS, MODO, SOURCES, dominioDoModo, ehCamadaDeSistema, systemsData } from './data.js?v=12.66.1';
+import { renderPsicoeducacaoPanel } from './dominios/psicoeducacao.js?v=12.66.1';
+import { IZHIKEVICH_TYPES, calculateNernst, izhSolver, renderEquationsCard } from './dominios/neuronio.js?v=12.66.1';
 import {
     analyzePolypharmacy, antidepressantsData, antipsychoticsData, directionConflicts, drugPKref,
     drugTargetsForaDaOntologia, drugsData, drugsForTarget, farmacoAcoplado, hasKiData, kiCompetitiveOccupancy,
     moodAndAnxioData, occupancyExceptionsIn, pharmacogenomicRiskIn, renderPharmaClasses, systemDrugsMap,
     targetsOfDrug
-} from './dominios/psicofarmacos.js?v=12.66.0';
+} from './dominios/psicofarmacos.js?v=12.66.1';
 import {
     SYNAPTIC_MACHINERY, cleft3DGroup, dossiersForTarget, machineryForDossier, molecularAdvancesData, renderStepCard
-} from './dominios/neurotransmissao.js?v=12.66.0';
+} from './dominios/neurotransmissao.js?v=12.66.1';
 import {
     CIRCUIT_LAYER_UI, CIRCUIT_PRESETS, DIMENSOES_DE_SINTOMA, atualizarTooltipFixado, brain3DGroup, brainCircuitsData,
     camadaFiltrada, canonicalSubTractsData, circuitTargets, circuitTargetsForaDaOntologia, circuitsForTarget,
     familiasDeCamadas, limiteDaCamada, neurostimProtocolsData, nucleiCatalog, nucleiClinicalData,
     pathologyProfilesData
-} from './dominios/circuitos.js?v=12.66.0';
-import { store } from './store.js?v=12.66.0';
+} from './dominios/circuitos.js?v=12.66.1';
+import { store } from './store.js?v=12.66.1';
 import {
     cameraByScale, cameraTween, definirCameraTween, definirLastVisualScale3D, escapeHtml, lastVisualScale3D,
     updateRealismBadge
-} from './features.js?v=12.66.0';
-import { camera3D, controls3D } from './render3d.js?v=12.66.0';
+} from './features.js?v=12.66.1';
+import { camera3D, controls3D } from './render3d.js?v=12.66.1';
 // ── fim dos módulos ──
 /* NeuroSim Pro 3D — ui.js. Gerado pela divisão da v12.0; a ordem de carga é definida em Simulador_Neuronio_Interativo.html.
    Scripts clássicos compartilham o escopo global: const/let/function de um arquivo são visíveis nos seguintes. */
