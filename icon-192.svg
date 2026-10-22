@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="192" height="192">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1329"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="axon" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#a855f7"/>
+    </linearGradient>
+    <radialGradient id="soma" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset="0.6" stop-color="#0ea5e9"/>
+      <stop offset="1" stop-color="#0369a1"/>
+    </radialGradient>
+    <radialGradient id="spark" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fde68a"/>
+      <stop offset="0.5" stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="192" height="192" rx="110" fill="url(#bg)"/>
+  <rect x="14" y="14" width="484" height="484" rx="98" fill="none" stroke="#38bdf8" stroke-opacity="0.25" stroke-width="3"/>
+  <g stroke="url(#axon)" stroke-width="14" stroke-linecap="round" fill="none" opacity="0.95">
+    <path d="M150 190 C 120 150, 95 130, 70 100"/>
+    <path d="M132 230 C 100 225, 75 235, 48 250"/>
+    <path d="M150 275 C 125 305, 105 330, 90 365"/>
+    <path d="M70 100 C 60 88, 52 76, 46 62" stroke-width="9"/>
+    <path d="M90 365 C 84 382, 76 396, 66 412" stroke-width="9"/>
+  </g>
+  <path d="M215 232 C 290 232, 320 236, 420 236" stroke="url(#axon)" stroke-width="18" stroke-linecap="round" fill="none"/>
+  <g fill="#a855f7" opacity="0.9">
+    <rect x="248" y="220" width="40" height="26" rx="13"/>
+    <rect x="304" y="222" width="40" height="26" rx="13"/>
+    <rect x="360" y="223" width="40" height="26" rx="13"/>
+  </g>
+  <circle cx="175" cy="232" r="62" fill="url(#soma)" filter="url(#glow)"/>
+  <circle cx="160" cy="216" r="16" fill="#e0f2fe" opacity="0.6"/>
+  <circle cx="436" cy="236" r="22" fill="#c084fc"/>
+  <circle cx="470" cy="236" r="40" fill="url(#spark)"/>
+  <circle cx="470" cy="236" r="11" fill="#fde68a"/>
+  <path d="M96 430 L 180 430 L 205 372 L 228 462 L 250 430 L 416 430" stroke="#22d3ee" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#glow)"/>
+</svg>

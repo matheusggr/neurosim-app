@@ -1,0 +1,27 @@
+{
+  "name": "NeuroSim Pro 3D - Simulador de Neurotransmissão & Psicofarmacologia",
+  "short_name": "NeuroSim 3D",
+  "description": "Plataforma Avançada de Biofísica Neuronal, Conectoma 3D/2D, Psicofarmacologia e Neuroestimulação",
+  "start_url": "./Simulador_Neuronio_Interativo.html",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#0284c7",
+  "orientation": "any",
+  "scope": "./",
+  "lang": "pt-BR",
+  "categories": ["education", "medical"],
+  "icons": [
+    {
+      "src": "./icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

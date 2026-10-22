@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="description" content="NeuroSim Pro 3D — simulador educacional de neurotransmissão, biofísica, psicofarmacologia e conectoma para ensino de psiquiatria.">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/svg+xml" href="./icon-192.svg">
+    <link rel="apple-touch-icon" href="./icon-192.svg">
+    <title>NeuroSim Pro 3D: Simulador Avançado de Neurotransmissão & Psicofarmacologia</title>
+    
+    <!-- Three.js r128 & OrbitControls: cópia local (funciona offline) com fallback para CDN -->
+
+    <style>
+        :root {
+            /* v12.52 (decisao D5 do autor): o FATOR DE PROJECAO. Tudo que a plateia le de longe — barra de passos,
+               craches, osciloscopio, legenda do conectoma, paineis, legenda da cena e os rotulos do canvas 2D — tem o
+               tamanho multiplicado por ele. Em 1 (padrao) o app e o mesmo de sempre; o Modo Aula poe 1.25. Trocar o
+               tamanho projetado e trocar ESTE numero, nao quinze regras. Valores pensados: 1 / 1.25 / 1.5. */
+            --escala-ui: 1;
+            --bg-primary: #020617;
+            --bg-secondary: #0b1329;
+            --bg-card: rgba(15, 23, 42, 0.92);
+            --border-color: rgba(59, 130, 246, 0.22);
+            --border-glow: rgba(56, 189, 248, 0.45);
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+            --accent-purple: #a855f7;
+            --accent-amber: #f59e0b;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(15, 23, 42, 0.82);
+            --glass-border: rgba(255, 255, 255, 0.10);
+            --text-on-color: #fff;   /* v12.34: texto sobre disco/pílula da cor do dado (número da legenda) */
+            --sidebar-width: 380px;
+            /* v12.32 — escala de camadas (roadmap 3.1). Seis nomes pelo PAPEL, saltos de 10x para que
+               inserir uma camada nunca exija renumerar as outras. Antes: 11 valores distintos, cinco
+               overlays empatados em 9999 e um 99999 que queria dizer "desisti". Trava: layout.test.ts. */
+            --z-scene: 10;          /* flutuantes da cena que NAO recebem clique: badge, osciloscopio, rotulos do painel duplo */
+            --z-scene-raised: 20;   /* flutuantes da cena que recebem clique: doca de camera, painel do modelo, selo, legenda, POE */
+            --z-chrome: 100;        /* cabecalho */
+            --z-panel: 1000;        /* paineis fixos nao modais: cenas, casos, tooltip do conectoma, selo de pausa */
+            --z-modal: 2000;        /* overlays de janela inteira: spotlight, POE, semiologia, fontes, cross-tapering */
+            --z-pointer: 3000;      /* o laser: acima de tudo, inclusive dos modais */
+            /* v12.32 — tokens do tema. No escuro, cada um vale exatamente o literal que substituiu;
+               por isso o tema escuro nao mudou um valor computado (fotografia em tests/tema.test.ts). */
+            --text-strong: #e2e8f0;
+            --text-soft: #cbd5e1;
+            --text-faint: #8594ac;   /* v12.42 (D9): era #64748b, 3,75:1 sobre #0f172a e 3,2:1 sobre a lista do Spotlight; agora 5,8:1 e 5,0:1, ainda abaixo de --text-soft */
+            --accent: #38bdf8;
+            --accent-soft: #7dd3fc;
+            --surface-modal: #0f172a;
+            --surface-field: #1e293b;
+            --surface-raised-50: rgba(30, 41, 59, 0.5);
+            --surface-raised-70: rgba(30, 41, 59, 0.7);
+            --surface-raised-60: rgba(30, 41, 59, 0.6);
+            --surface-inset: rgba(2, 6, 23, 0.6);
+            --surface-inset-90: rgba(2, 6, 23, 0.9);
+            --overlay-70: rgba(2, 6, 23, 0.7);
+            --overlay-80: rgba(2, 6, 23, 0.8);
+            --overlay-85: rgba(2, 6, 23, 0.85);
+            --overlay-88: rgba(2, 6, 23, 0.88);
+            --overlay-90: rgba(2, 6, 23, 0.9);
+            --overlay-94: rgba(2, 6, 23, 0.94);
+            --overlay-95: rgba(2, 6, 23, 0.95);
+            --overlay-96: rgba(2, 6, 23, 0.96);
+            --panel-97: rgba(11, 19, 41, 0.97);
+            --card-60: rgba(15, 23, 42, 0.6);
+            --card-70: rgba(15, 23, 42, 0.7);
+            --card-85: rgba(15, 23, 42, 0.85);
+            --card-88: rgba(11, 19, 41, 0.88);
+            --card-90: rgba(15, 23, 42, 0.9);
+            --card-95: rgba(15, 23, 42, 0.95);
+            --control-60: rgba(0, 0, 0, 0.6);
+            --control-65: rgba(0, 0, 0, 0.65);
+            --tint-20: rgba(0, 0, 0, 0.2);
+            --tint-25: rgba(0, 0, 0, 0.25);
+            --tint-30: rgba(0, 0, 0, 0.3);
+            --tint-35: rgba(0, 0, 0, 0.35);
+            --lift-04: rgba(255, 255, 255, 0.04);
+            --lift-05: rgba(255, 255, 255, 0.05);
+            --lift-06: rgba(255, 255, 255, 0.06);
+            --lift-08: rgba(255, 255, 255, 0.08);
+            --lift-10: rgba(255, 255, 255, 0.1);
+            --line-05: rgba(255, 255, 255, 0.05);
+            --line-10: rgba(255, 255, 255, 0.1);
+            --line-14: rgba(255, 255, 255, 0.14);
+            --line-15: rgba(255, 255, 255, 0.15);
+            --ink-red: #f87171;
+            --ink-red-500: #ef4444;
+            --ink-green: #4ade80;
+            --ink-green-500: #22c55e;
+            --ink-emerald: #34d399;
+            --ink-emerald-500: #10b981;
+            --ink-emerald-soft: #6ee7b7;
+            --ink-amber: #fbbf24;
+            --ink-amber-500: #f59e0b;
+            --ink-amber-soft: #fde68a;
+            --ink-purple: #c084fc;
+            --ink-purple-500: #a855f7;
+            --ink-purple-soft: #e9d5ff;
+            --ink-violet: #a78bfa;
+            --ink-pink: #f472b6;
+            --ink-pink-soft: #f9a8d4;
+            --ink-teal: #14b8a6;
+            --ink-blue: #60a5fa;
+            --ink-neutral: #a3a3a3;
+            --ink-yellow: #facc15;
+            --ink-yellow-500: #eab308;
+            --ink-cyan: #67e8f9;
+        }
+
+        body.atlas-theme {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.94);
+            --border-color: rgba(2, 132, 199, 0.22);
+            --border-glow: rgba(2, 132, 199, 0.40);
+            --text-main: #0f172a;
+            --text-muted: #475569;   /* v12.32: era #64748b, 4,1:1 sobre as abas */
+            --glass-bg: rgba(255, 255, 255, 0.88);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --text-on-color: #fff;   /* igual nos dois temas: o fundo é a cor do dado, não do tema */
+            /* v12.32 — o par claro de cada token. Acentos e tintas descem para os tons 700 (4,5:1 sobre branco). */
+            --accent-cyan: #0e7490;
+            --accent-blue: #1d4ed8;
+            --accent-purple: #7e22ce;
+            --accent-amber: #b45309;
+            --accent-emerald: #047857;
+            --accent-rose: #be123c;
+            --text-strong: #1e293b;
+            --text-soft: #334155;
+            --text-faint: #64748b;
+            --accent: #0369a1;
+            --accent-soft: #075985;
+            --surface-modal: #ffffff;
+            --surface-field: #ffffff;
+            --surface-raised-50: rgba(226, 232, 240, 0.6);
+            --surface-raised-70: rgba(226, 232, 240, 0.8);
+            --surface-raised-60: rgba(226, 232, 240, 0.7);
+            --surface-inset: rgba(15, 23, 42, 0.06);
+            --surface-inset-90: rgba(15, 23, 42, 0.06);
+            --overlay-70: rgba(255, 255, 255, 0.7);
+            --overlay-80: rgba(255, 255, 255, 0.8);
+            --overlay-85: rgba(255, 255, 255, 0.85);
+            --overlay-88: rgba(255, 255, 255, 0.88);
+            --overlay-90: rgba(255, 255, 255, 0.9);
+            --overlay-94: rgba(255, 255, 255, 0.94);
+            --overlay-95: rgba(255, 255, 255, 0.95);
+            --overlay-96: rgba(255, 255, 255, 0.96);
+            --panel-97: rgba(255, 255, 255, 0.97);
+            --card-60: rgba(255, 255, 255, 0.6);
+            --card-70: rgba(255, 255, 255, 0.7);
+            --card-85: rgba(255, 255, 255, 0.85);
+            --card-88: rgba(255, 255, 255, 0.88);
+            --card-90: rgba(255, 255, 255, 0.9);
+            --card-95: rgba(255, 255, 255, 0.95);
+            --control-60: rgba(15, 23, 42, 0.08);
+            --control-65: rgba(15, 23, 42, 0.08);
+            --tint-20: rgba(15, 23, 42, 0.03);
+            --tint-25: rgba(15, 23, 42, 0.04);
+            --tint-30: rgba(15, 23, 42, 0.04);
+            --tint-35: rgba(15, 23, 42, 0.05);
+            --lift-04: rgba(15, 23, 42, 0.03);
+            --lift-05: rgba(15, 23, 42, 0.04);
+            --lift-06: rgba(15, 23, 42, 0.05);
+            --lift-08: rgba(15, 23, 42, 0.06);
+            --lift-10: rgba(15, 23, 42, 0.08);
+            --line-05: rgba(15, 23, 42, 0.08);
+            --line-10: rgba(15, 23, 42, 0.1);
+            --line-14: rgba(15, 23, 42, 0.14);
+            --line-15: rgba(15, 23, 42, 0.16);
+            --ink-red: #991b1b;   /* medido: #b91c1c dava 4,21:1 sobre a tinta do badge */
+            --ink-red-500: #b91c1c;   /* medido: #dc2626 dava 3,99:1 sobre a tinta rosa do card */
+            --ink-green: #15803d;
+            --ink-green-500: #15803d;
+            --ink-emerald: #047857;
+            --ink-emerald-500: #047857;
+            --ink-emerald-soft: #065f46;
+            --ink-amber: #b45309;
+            --ink-amber-500: #b45309;
+            --ink-amber-soft: #92400e;
+            --ink-purple: #7e22ce;
+            --ink-purple-500: #7e22ce;
+            --ink-purple-soft: #6b21a8;
+            --ink-violet: #6d28d9;
+            --ink-pink: #be185d;
+            --ink-pink-soft: #9d174d;
+            --ink-teal: #0f766e;
+            --ink-blue: #1d4ed8;
+            --ink-neutral: #525252;
+            --ink-yellow: #854d0e;
+            --ink-yellow-500: #854d0e;
+            --ink-cyan: #0e7490;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            /* v12.15: ALTURA definida, nao min-height. Com min-height o body cresce ate o
+               conteudo e o flex:1 do workspace nao tem sobra nenhuma para distribuir. */
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;   /* a rolagem passa a ser interna aos paineis */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Top Header */
+        header {
+            flex: 0 0 auto;
+            background: var(--glass-bg);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            z-index: var(--z-chrome);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: relative;
+            flex-wrap: nowrap;
+        }
+        header .header-left { flex-shrink: 0; }
+        header .master-nav { flex-shrink: 1; min-width: 0; flex-wrap: nowrap; }
+        @media (max-width: 1500px) {
+            .nav-tab-btn { padding: 6px 8px; font-size: 0.68rem; }
+            .header-actions .action-btn { padding: 4px 7px; font-size: 0.78rem; }
+            .header-actions .action-btn .lbl { display: none; }
+            .app-title { font-size: 1rem; }
+        }
+
+        .header-left {
+            flex: 0 0 auto;   /* v12.17: identidade nunca encolhe */
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-title {
+            font-size: 1.15rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        /* Master Mode Segmented Navigation */
+        /* v12.17 — A REGRA UNICA da navegacao de modos.
+           Havia duas .master-nav, como havia duas .workspace: a de baixo vencia por vir depois.
+           Aqui o papel importa mais que a aparencia: este e o UNICO item elastico do cabecalho,
+           e por isso e o unico que pode encolher quando falta espaco. Sem min-width:0 a caixa
+           nao pode ficar menor que o conteudo, e sem overflow o conteudo pinta fora dela — foi
+           assim que o botao do modo 4 invadiu 88 px dos botoes de Som e Tema. */
+        .master-nav {
+            display: flex;
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: hidden;
+            background: var(--tint-35);
+            padding: 3px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            gap: 3px;
+        }
+
+        body.atlas-theme .master-nav {
+            background: #e2e8f0;
+        }
+
+
+
+
+        .header-actions {
+            flex: 0 0 auto;   /* v12.17: as 8 ferramentas nunca encolhem */
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .header-actions .action-btn { padding: 4px 8px; font-size: 0.68rem; white-space: nowrap; }
+        /* v12.17: text-overflow NAO funciona no .nav-tab-btn, que e display:flex para alinhar o
+           emoji. A elipse precisa ir no span interno. A .tag nunca e cortada, entao no pior
+           aperto sobram quatro alvos identificaveis. */
+        /* MEDIDO: encolher a CAIXA da .master-nav nao basta. Ela encolheu para 669 px e os
+           quatro botoes continuaram somando 753, transbordando 88 px — porque o botao tambem e
+           item flex e tambem nasce com min-width:auto. Sem estas duas linhas, o overflow:hidden
+           do pai apenas ESCONDE a metade direita do modo 4, que fica invisivel e inclicavel.
+           Varredura de area antes: 11 de 23 pontos do botao nao respondiam. */
+        .nav-tab-btn .tag { flex: 0 0 auto; }
+        .nav-tab-btn .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .action-btn {
+            background: var(--lift-06);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 5px 11px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(56, 189, 248, 0.12);
+        }
+
+        /* Context-Aware Dynamic Sub-Bar */
+        .context-bar {
+            /* v12.15: com o body em overflow:hidden, um modo com muitas fileiras ficaria
+               INACESSIVEL. Este max-height + overflow-y e a mitigacao obrigatoria. */
+            flex: 0 0 auto;
+            max-height: 30vh;
+            overflow-y: auto;
+            background: rgba(11, 19, 41, 0.85);
+            border-bottom: 1px solid var(--border-color);
+            padding: 8px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        body.atlas-theme .context-bar {
+            background: #ffffff;
+        }
+
+        .pills-group {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .pill-btn {
+            background: var(--card-60);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            padding: 4px 10px;
+            font-size: 0.70rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        body.atlas-theme .pill-btn {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .pill-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-main);
+        }
+
+        .pill-btn.active {
+            background: linear-gradient(135deg, #0284c7, #06b6d4);
+            border-color: var(--accent);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+
+        /* v12.32: cor vinda dos DADOS entra como variavel (--cor, --borda) e o tema decide como
+           pinta-la. No escuro, a cor como esta; no claro, escurecida por color-mix() para manter o
+           matiz e chegar a 4,5:1 sobre branco. Fica DEPOIS de .pill-btn.active de proposito: a pilula
+           de camada ativa mantem a cor da camada, como o color: inline fazia antes. */
+        .pill-btn[style*="--cor:"] { color: var(--cor); border-color: var(--borda, var(--cor)); }
+        body.atlas-theme .pill-btn[style*="--cor:"] { color: color-mix(in srgb, var(--cor) 45%, #0f172a); border-color: color-mix(in srgb, var(--borda, var(--cor)) 70%, #0f172a); }
+        /* v12.42 (D9): a pilula PRESCRITA da prateleira (Neurotransmissao). No escuro, o roxo-500 escurece 30% (branco sobre ele
+           media 3,96:1; agora 6,7:1); no claro, o roxo-500 do tema ja da 7:1 com branco. Depois de .pill-btn.active de proposito. */
+        .pill-btn.prescrito { background: color-mix(in srgb, var(--ink-purple-500) 70%, black); border-color: var(--ink-purple); color: var(--text-on-color); box-shadow: none; }
+        body.atlas-theme .pill-btn.prescrito { background: var(--ink-purple-500); color: var(--text-on-color); }   /* body.atlas-theme .pill-btn pinta o texto de cinza; aqui a especificidade devolve o branco */
+        .ink[style*="--cor:"] { color: var(--cor); }
+        body.atlas-theme .ink[style*="--cor:"] { color: color-mix(in srgb, var(--cor) 45%, #0f172a); }
+        /* v12.42 (D9): no Spotlight, em texto pequeno sobre a lista escura, a cor do dado pura media 2,9–3,9:1; clareia 30% so ali, so no escuro */
+        body:not(.atlas-theme) #spotlightOverlay .ink[style*="--cor:"] { color: color-mix(in srgb, var(--cor) 60%, white); }   /* 60/40: a linha em foco (#233c54) pedia mais que 70/30 (4,42:1) */
+
+        /* v12.33: vocabulario de COMANDO na barra de contexto — texto sem borda, a direita, distinto do
+           vocabulario de ESTADO das pilulas (Fase 3.2). Marcar todas / Limpar / Desfazer. */
+        .cmd-btn { background: none; border: 0; color: var(--text-muted); font: inherit; font-size: 0.7rem; font-weight: 700; cursor: pointer; padding: 3px 7px; border-radius: 4px; text-decoration: underline dotted; text-underline-offset: 3px; white-space: nowrap; }
+        .cmd-btn:hover { color: var(--text-main); background: var(--lift-06); }
+
+        /* v12.34: legenda do conectoma em DOM (Fase 4.2). Substitui a faixa pintada no canvas, que era imagem e
+           estava em ingles. Nao recebe clique (--z-scene); no Modo Aula sobe para nao encostar na doca. */
+        .legenda-conectoma { display: none; position: absolute; right: 12px; bottom: 12px; max-width: min(40%, 460px); z-index: var(--z-scene); pointer-events: none; background: var(--card-88); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 10px; font-size: calc(0.68rem * var(--escala-ui)); line-height: 1.35; color: var(--text-main); backdrop-filter: blur(6px); }
+        .legenda-cabecalho { font-weight: 700; }
+        .legenda-itens { display: flex; flex-wrap: wrap; gap: 3px 10px; margin-top: 3px; }
+        .legenda-vias { margin-top: 5px; padding-top: 4px; border-top: 1px solid var(--border-color); }   /* v12.34.1: vias numeradas abaixo das camadas */
+        .legenda-item { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; font-weight: 700; }
+        /* v12.54 (D4, opcao c): o MARCADOR DE COR — onde a cor e o dado (sistema, camada, lente), o circulo e pintado
+           com a cor que vem da tabela, a mesma que o canvas usa. Emoji de circulo nao serve: muda de tom por
+           plataforma e podia discordar do desenho (a Dopamina era azul na barra e roxa no conectoma). Acompanha o
+           tamanho da letra, entao cresce junto na projecao. */
+        .marcador { width: 0.62em; height: 0.62em; border-radius: 50%; display: inline-block; flex: 0 0 auto;
+                    background: var(--cor, currentColor); margin-right: 0.34em; vertical-align: baseline; }
+        /* v12.58: a segunda dimensao visual. Redondo = sistema de neurotransmissor; quadrado = circuito. */
+        .marcador--circuito { border-radius: 2px; }
+        .legenda-chave { margin-top: 4px; padding-top: 3px; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: calc(0.62rem * var(--escala-ui)); }
+        .legenda-chave .marcador { background: var(--text-muted); }
+        .legenda-ponto { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: 0 0 auto; }
+        .legenda-num { display: inline-flex; width: 15px; height: 15px; border-radius: 50%; align-items: center; justify-content: center; color: var(--text-on-color); font-size: 0.6rem; font-weight: 800; flex: 0 0 auto; }
+        /* Modo Aula: acima da doca; 38% para nao alcancar LC, rafe mediana, A5/A7 e RVM (sx 0,54-0,59) a 1280x720 — medido pelo check:rotulos */
+        body.presenter-mode .legenda-conectoma { bottom: 124px; max-width: 38%; }
+        /* v12.39 (Bloco 4): a lente e publicada no body (data-lente); na fisiopatologia a legenda ganha a moldura do dado desviado */
+        body[data-lente="fisiopatologia"] .legenda-conectoma { border-color: var(--ink-red-500); }
+
+        /* 6-Step Storyline Toolbar */
+        .storyline-bar {
+            flex: 0 0 auto;   /* v12.15 */
+            background: var(--overlay-95);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding: calc(6px * var(--escala-ui)) calc(18px * var(--escala-ui));
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+        }
+
+        /* v12.19 — decisao do autor em 31/08: os seis passos da neurotransmissao so agem no
+           modo 1. Fora dele eram sete controles permanentes ocupando ~32 px sem fazer nada.
+           Escondidos por CSS a partir do data-modo do <body>: nenhuma funcao sai do app, e
+           voltar a mostra-los e apagar uma regra. */
+        /* v12.37 (Bloco 2): o body publica o que o DOMINIO atual possui (renderUI le DOMINIOS, data.js) e o CSS decide:
+           data-passos — os seis passos so em Neurotransmissao; data-biofisica — osciloscopio e painel do modelo so em
+           Neuronio e Neurotransmissao; data-escalas="cleft2d 3d" — a doca so mostra as escalas do dominio. */
+        body:not([data-passos="1"]) .storyline-bar { display: none; }
+        body:not([data-biofisica="1"]) .oscilloscope-floating, body:not([data-biofisica="1"]) #modelPanel { display: none; }
+        .viewport-controls-floating [data-escala] { display: none; }
+        body[data-escalas~="cleft2d"] .viewport-controls-floating [data-escala="cleft2d"],
+        body[data-escalas~="neuron2d"] .viewport-controls-floating [data-escala="neuron2d"],
+        body[data-escalas~="brain2d"] .viewport-controls-floating [data-escala="brain2d"],
+        body[data-escalas~="brain2d"] .viewport-controls-floating [data-escala="comparar"],
+        body[data-escalas~="brain3d"] .viewport-controls-floating [data-escala="brain3d"],
+        body[data-escalas~="3d"] .viewport-controls-floating [data-escala="3d"] { display: inline-flex; }
+
+        /* v12.20.0 — durante a comparacao lado a lado, os rotulos flutuantes da cena UNICA
+           nao pertencem a nenhum dos dois paineis. Medido em 01/09/2026: o #viewport-badge
+           (303 px) cobria o rotulo "Esquizofrenia" do painel direito, que tem 128 px e comeca
+           12 px antes — o professor via "Cerebro Sadio" a esquerda e um painel sem identidade
+           a direita. #realismBadge e o osciloscopio caem sobre o mesmo painel, e
+           #dualModeControls repete o botao Comparar que ja existe na doca.
+           Some enquanto compara, volta ao sair. */
+        body[data-comparando="1"] #viewport-badge,
+        body[data-comparando="1"] #realismBadge,
+        body[data-comparando="1"] .oscilloscope-floating,
+        body[data-comparando="1"] #dualModeControls { display: none !important; }
+
+        body.atlas-theme .storyline-bar {
+            background: #f8fafc;
+        }
+
+        .step-pill-btn {
+            background: var(--card-70);
+            border: 1px solid var(--line-10);
+            color: var(--text-muted);
+            padding: calc(3px * var(--escala-ui)) calc(9px * var(--escala-ui));
+            font-size: calc(0.66rem * var(--escala-ui));
+            font-weight: 700;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .step-pill-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: #ffffff;
+            border-color: #818cf8;
+            box-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Main Workspace Layout */
+        /* v12.15 — A REGRA UNICA do workspace.
+           Havia duas: esta, que ja declarava flex:1 (o comportamento correto), e outra mais
+           abaixo com height: calc(100vh - 138px), que vencia por vir depois. Um height
+           explicito congela um item flex, entao a segunda anulava a primeira — e o 138 era
+           uma suposicao falsa sobre a altura da moldura, que varia de 128 a 194 px conforme
+           o modo. A correcao foi apagar a segunda, nao somar uma terceira. */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr var(--sidebar-width);
+            flex: 1 1 auto;
+            min-height: 0;   /* autoriza ficar menor que o conteudo e cortar por dentro */
+            overflow: hidden;
+            position: relative;
+            background: var(--bg-primary);
+            transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (max-width: 1100px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left Viewport Stage */
+        .stage-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;   /* v12.15: elo da cadeia */
+            border-right: 1px solid var(--border-color);
+            position: relative;
+            background: radial-gradient(circle at center, #070d1e 0%, #020617 100%);
+        }
+
+        body.atlas-theme .stage-container {
+            background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%);
+        }
+
+        .viewport-wrapper {
+            flex: 1;
+            position: relative;
+            min-height: 0;   /* v12.15: era 480px, e o pai com overflow:hidden cortava em vez de caber */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #threejs-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #synapseCanvas, #neuronCanvas, #brainCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 3D & 2D Floating Overlays */
+        .viewport-badge {
+            position: absolute;
+            top: 12px;
+            right: 244px;
+            left: auto;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: calc(6px * var(--escala-ui)) calc(12px * var(--escala-ui));
+            font-size: calc(0.70rem * var(--escala-ui));
+            font-weight: 800;
+            color: var(--accent);
+            backdrop-filter: blur(8px);
+            z-index: var(--z-scene);
+            pointer-events: none;
+            max-width: 45%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* v12.16 — DOCA, nao flutuante.
+           Flutuar e certo para o que e secundario a cena (osciloscopio, selo, legenda). Esta e a
+           navegacao mais usada do app: flutuando, ela pagava todos os custos do flutuante e nao
+           recebia o beneficio, porque nunca e dispensada. Em fluxo ela nao pode ser coberta nem
+           sair da tela — nao ha caso a tratar, ha geometria. */
+        .viewport-controls-floating {
+            flex: 0 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Oscilloscope Floating Card */
+        .oscilloscope-floating {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: calc(220px * var(--escala-ui));
+            pointer-events: none;
+            background: var(--card-88);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            border-radius: 8px;
+            padding: 8px;
+            backdrop-filter: blur(10px);
+            z-index: var(--z-scene);
+        }
+
+        /* Right Smart Inspector Panel */
+        .inspector-panel {
+            background: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            min-height: 0;   /* v12.15: o grid ja limita; o max-height magico saiu */
+        }
+
+        .inspector-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inspector-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .inspector-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--border-glow);
+        }
+
+        .card-title {
+            font-size: 0.82rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-desc {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.68rem;
+            margin-top: 8px;
+        }
+
+        .tech-table th {
+            text-align: left;
+            padding: 5px 8px;
+            background: var(--tint-30);
+            color: var(--accent);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tech-table td {
+            padding: 5px 8px;
+            border-bottom: 1px solid var(--line-05);
+            color: var(--text-main);
+            word-break: break-word;
+            vertical-align: top;
+        }
+
+        .clinical-pearl {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--ink-amber-500);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            color: var(--ink-amber-soft);
+            line-height: 1.4;
+        }
+
+        body.atlas-theme .clinical-pearl {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Status Bar at Bottom */
+        .status-footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 6px 16px;
+            font-size: 0.70rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+    
+        /* Floating Anatomy & Clinical Tooltip */
+        #connectome-tooltip[data-fixado="1"] { border-color: var(--accent); }   /* v12.43 (D10): o tooltip fixado se distingue do de hover */
+        .floating-tooltip {
+            background: var(--card-95);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--text-main);
+            font-size: 0.72rem;
+            max-width: 280px;
+            pointer-events: none;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 12px rgba(56, 189, 248, 0.3);
+            transition: opacity 0.15s ease;
+            z-index: var(--z-panel);
+        }
+        .tooltip-title {
+            font-weight: 800;
+            color: var(--accent);
+            font-size: 0.80rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tooltip-badge {
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--accent-soft);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+        .tooltip-row {
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+        .tooltip-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+    
+        /* v12.17: a segunda regra .master-nav vivia aqui e foi apagada; o que ela tinha de
+           diferente (a borda e o gap) subiu para a regra unica.
+           v12.32: aqui tambem viviam as segundas copias de :root, body.atlas-theme e header, com
+           valores DIVERGENTES das primeiras (--accent-purple #8b5cf6 × #a855f7, --text-muted do tema
+           claro #475569 × #64748b). Foram fundidas nas primeiras posicoes (linhas 16-80) com os
+           valores que ja venciam na cascata; a fotografia de 583 elementos × 50 propriedades, nos
+           dois temas e em 1528 e 1280 px, deu zero diferencas.
+           .nav-tab-btn, :hover e .active ficaram AQUI de proposito: a @media (max-width: 1500px)
+           das abas, escrita la em cima, e vencida por esta posicao e esta MORTA hoje. Fundir la em
+           cima a reativaria e encolheria as abas no projetor — decisao de layout, nao de fusao.
+           Trava: tests/layout.test.ts, "uma regra de base por seletor". */
+
+        .nav-tab-btn {
+            white-space: nowrap;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 14px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 0 1 auto;
+            min-width: 0;
+        }
+
+        .nav-tab-btn:hover {
+            color: var(--text-main);
+            background: var(--lift-06);
+        }
+
+        .nav-tab-btn.active {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(2, 132, 199, 0.4);
+        }
+
+        /* v12.15: a segunda regra .workspace vivia aqui e foi apagada. Ela declarava
+           height: calc(100vh - 138px) e, por vir depois, anulava o flex:1 da regra de cima.
+           Trava em tests/layout.test.ts: so pode existir UMA regra .workspace de base. */
+
+        .workspace.sidebar-collapsed {
+            grid-template-columns: 1fr 0px;
+        }
+
+        .workspace.sidebar-collapsed .inspector-panel {
+            display: none;
+        }
+
+        /* Camera Preset Dock inside 3D Viewport */
+        .camera-presets-dock {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            display: flex;
+            gap: 4px;
+            z-index: var(--z-scene-raised);
+            background: var(--card-85);
+            backdrop-filter: blur(10px);
+            padding: 3px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .preset-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .preset-btn:hover {
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .preset-btn.active {
+            background: #0284c7;
+            color: #ffffff;
+        }
+
+
+        /* ==========================================
+           MODO AULA (v10.1) — projeção e gravação
+           ========================================== */
+        /* v12.52 (D5): o Modo Aula nao repete tamanho nenhum — ele so' troca o FATOR, e o resto do CSS obedece.
+           O que sobra abaixo e' posicao e caixa (o que muda de lugar ou de arranjo, nao de tamanho). */
+        body.presenter-mode { --escala-ui: 1.25; }
+        /* v12.53: as teclas + e - no Modo Aula trocam o nivel; o body publica data-escala-projecao (100/125/150) e os
+           tres valores do fator moram aqui, num lugar so. Fora do Modo Aula o fator e 1: nao ha o que aumentar. */
+        body.presenter-mode[data-escala-projecao="100"] { --escala-ui: 1; }
+        body.presenter-mode[data-escala-projecao="150"] { --escala-ui: 1.5; }
+        body.presenter-mode header, body.presenter-mode .context-bar, body.presenter-mode .status-footer,
+        body.presenter-mode #eduDisclaimer { display: none !important; }
+        body.presenter-mode .workspace, body.presenter-mode .workspace.sidebar-collapsed { grid-template-columns: 1fr; }   /* v12.15: sem header/context/storyline, o flex:1 ja ocupa tudo */
+        body.presenter-mode .inspector-panel { display: none; }
+        body.presenter-mode .stage-container { border-right: none; }
+        body.presenter-mode .storyline-bar { flex-wrap: wrap; row-gap: 6px; }
+        body.presenter-mode .viewport-badge { right: 324px; max-width: 38%; }
+        body.presenter-mode #realismBadge {
+            right: 324px;
+            top: 50px;
+        }
+        /* v12.16: no Modo Aula nao ha moldura com que colidir e a tela cheia e o ponto. */
+        body.presenter-mode .viewport-controls-floating { position: absolute; bottom: 12px; left: 12px; background: transparent; border-top: 0; padding: 0; z-index: var(--z-scene-raised); }
+        body.presenter-mode #sceneCaption {
+            max-width: 80%;
+            bottom: 70px;
+            pointer-events: auto;
+            cursor: text;
+        }
+        body.presenter-mode #sceneCaption b { font-size: 0.85rem; }
+        body.presenter-mode.hide-controls .viewport-controls-floating, body.presenter-mode.hide-controls .oscilloscope-floating,
+        body.presenter-mode.hide-controls .viewport-badge, body.presenter-mode.hide-controls #realismBadge, body.presenter-mode.hide-controls .camera-presets-dock { display: none !important; }
+        #laserPointer { display: none; position: fixed; width: 26px; height: 26px; border-radius: 50%; pointer-events: none; z-index: var(--z-pointer);
+            background: radial-gradient(circle, rgba(239,68,68,0.95) 0%, rgba(239,68,68,0.55) 40%, rgba(239,68,68,0) 70%);
+            box-shadow: 0 0 18px 6px rgba(239,68,68,0.45); transform: translate(-50%, -50%); }
+        body.presenter-mode #laserPointer { display: block; }
+        /* v12.31: o aviso e a PRIMEIRA LINHA da doca, em fluxo — nao pode cobrir botao nenhum, em nenhuma
+           largura, com uma ou duas fileiras. Antes era position:fixed; bottom:64px; z-index:9400, medido
+           cobrindo quatro botoes da doca a 1366x768 e a 1280x720 (check:layout). O z-index sumiu junto. */
+        #presenterHint { display: none; flex: 0 0 100%; justify-content: center; pointer-events: none; font-size: 0.7rem; color: var(--text-muted); }
+        #presenterHint > span { background: var(--overlay-85); border: 1px solid var(--line-15); border-radius: 20px; padding: 4px 14px; }
+        body.presenter-mode #presenterHint { display: flex; opacity: 1; transition: opacity 1s; }
+        body.presenter-mode #presenterHint.faded { opacity: 0; }
+
+        /* Player de casos clínicos (v11) */
+        #casePanel, #psicoeducacaoPanel { display: none; position: fixed; left: 12px; bottom: 60px; width: calc(420px * var(--escala-ui)); max-height: calc(100vh - 140px); overflow-y: auto; z-index: var(--z-panel);
+            background: var(--panel-97); border: 1px solid rgba(168,85,247,0.5); border-radius: 12px; box-shadow: 0 20px 40px -12px rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px); padding: 12px 14px; font-size: calc(0.78rem * var(--escala-ui)); color: var(--text-main); line-height: 1.45; }
+        body.atlas-theme #casePanel, body.atlas-theme #psicoeducacaoPanel { background: rgba(255,255,255,0.98); }
+        #casePanel.open, #psicoeducacaoPanel.open { display: block; }
+        body.presenter-mode #casePanel, body.presenter-mode #psicoeducacaoPanel { bottom: 70px; }
+        body.presenter-mode.hide-controls #casePanel, body.presenter-mode.hide-controls #psicoeducacaoPanel { display: none !important; }
+        .case-step-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); cursor: pointer; }
+        .case-step-dot.done { background: #10b981; border-color: var(--ink-emerald-500); }
+        .case-step-dot.current { background: #a855f7; border-color: var(--ink-purple); box-shadow: 0 0 0 3px rgba(168,85,247,0.3); }
+        .case-teacher { background: rgba(168,85,247,0.08); border-left: 3px solid var(--ink-purple-500); padding: 8px 10px; border-radius: 0 8px 8px 0; margin: 6px 0; }
+        .case-observe { background: rgba(56,189,248,0.08); border-left: 3px solid var(--accent); padding: 8px 10px; border-radius: 0 8px 8px 0; margin: 6px 0; }
+        @media (max-width: 720px) { #casePanel, #psicoeducacaoPanel { left: 6px; right: 6px; width: auto; bottom: 6px; max-height: 60vh; } }
+
+        /* Modo de cores seguro para daltonismo (v10.4) — aplicado a cada filho direto do body (não quebra position: fixed) */
+        body.cvd-safe > header, body.cvd-safe > .context-bar, body.cvd-safe > .storyline-bar, body.cvd-safe > main, body.cvd-safe > #scenesPanel,
+        body.cvd-safe > #sourcesOverlay, body.cvd-safe > #poeOverlay, body.cvd-safe > #crossTaperingOverlay, body.cvd-safe > #spotlightOverlay { filter: url(#cvdSafeFilter); }
+        body.presenter-mode #sceneCaption[contenteditable="true"] { outline: 1px dashed #c084fc; }
+        /* v12.15: o #eduDisclaimer era static so no celular. Agora e static sempre — o que
+           estava certo no celular estava certo no desktop tambem. */
+
+        /* Painel ⚙️ Modelo (v10.3) */
+        #modelPanel { display: none; position: absolute; top: 118px; right: 12px; width: calc(330px * var(--escala-ui)); z-index: var(--z-scene-raised); background: var(--overlay-94); border: 1px solid rgba(56,189,248,0.4);
+            border-radius: 10px; padding: 10px 12px; font-size: calc(0.68rem * var(--escala-ui)); color: var(--text-strong); backdrop-filter: blur(8px); box-shadow: 0 16px 32px -12px rgba(0,0,0,0.7); }
+        #modelPanel.open { display: block; }
+        .hh-eq { font-family: 'Cambria Math', 'STIX Two Math', Georgia, serif; font-size: calc(0.86rem * var(--escala-ui)); line-height: 1.6; color: var(--text-main); background: var(--lift-04); border-radius: 8px; padding: 6px 8px; }
+        .hh-term { padding: 1px 4px; border-radius: 5px; border: 1px solid transparent; transition: background 0.15s, border-color 0.15s; }
+        .hh-term.dom { background: rgba(255,255,255,0.12); border-color: currentColor; }
+        #hh-term-na { color: var(--ink-red); } #hh-term-k { color: var(--ink-blue); } #hh-term-l { color: var(--ink-neutral); }
+        .hh-rows { margin-top: 6px; display: flex; flex-direction: column; gap: 3px; }
+        .hh-row { display: grid; grid-template-columns: 26px 1fr 64px; align-items: center; gap: 6px; }
+        .hh-row span:last-child { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-soft); }
+        .hh-bar { height: 7px; background: var(--lift-08); border-radius: 4px; overflow: hidden; position: relative; }
+        .hh-bar div { height: 100%; width: 0; transition: width 0.1s; }
+        .hh-gates { margin-top: 6px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+        .hh-sliders { margin-top: 6px; display: flex; flex-direction: column; gap: 3px; }
+        .hh-sliders label { display: grid; grid-template-columns: 130px 1fr; align-items: center; gap: 6px; color: var(--text-soft); white-space: nowrap; }
+        .hh-sliders input[type=range] { width: 100%; accent-color: var(--accent); height: 4px; }
+        .hh-note { margin-top: 6px; font-size: 0.6rem; color: var(--text-faint); line-height: 1.35; }
+        body.presenter-mode #modelPanel { top: 150px; }
+        @media (max-width: 720px) { #modelPanel { right: 6px; left: 6px; width: auto; top: 100px; } }
+
+        /* Selo de nível de realismo (v10.1) */
+        #realismBadge {
+            pointer-events: auto;
+            cursor: pointer;
+            position: absolute;
+            top: 44px;
+            right: 244px;
+            z-index: var(--z-scene-raised);
+            font-size: calc(0.62rem * var(--escala-ui));
+            font-weight: 700;
+            padding: calc(3px * var(--escala-ui)) calc(9px * var(--escala-ui));
+            border-radius: 12px;
+            border: 1px solid;
+            background: var(--overlay-80);
+            backdrop-filter: blur(6px);
+            letter-spacing: 0.3px;
+        }
+        #realismBadge.solved { color: var(--ink-emerald); border-color: rgba(52,211,153,0.5); }
+        #realismBadge.schematic { color: var(--ink-amber); border-color: rgba(251,191,36,0.5); }
+        #realismBadge.heuristic { color: var(--ink-pink); border-color: rgba(244,114,182,0.5); }
+        @media (max-width: 1100px) { #realismBadge { right: 184px; } }
+        @media (max-width: 720px) { #realismBadge { top: 36px; right: 148px; font-size: 0.56rem; } }
+
+        /* Experimentos Prever–Observar–Explicar (v10.1) */
+        .poe-option { display: block; width: 100%; text-align: left; background: var(--lift-05); border: 1px solid var(--line-14); color: var(--text-main);
+            border-radius: 8px; padding: 8px 12px; margin: 5px 0; cursor: pointer; font-size: 0.8rem; }
+        .poe-option:hover { background: rgba(56,189,248,0.15); border-color: rgba(56,189,248,0.5); }
+        .poe-option.chosen { background: rgba(168,85,247,0.2); border-color: var(--ink-purple-500); }
+        .poe-option.correct { background: rgba(16,185,129,0.18); border-color: var(--ink-emerald-500); }
+        .poe-option.wrong { background: rgba(239,68,68,0.15); border-color: var(--ink-red-500); }
+        #poeResult { display: none; position: absolute; top: 12px; left: 12px; z-index: var(--z-scene-raised); max-width: calc(420px * var(--escala-ui)); background: var(--overlay-94); border: 1px solid rgba(168,85,247,0.6);
+            border-radius: 12px; padding: 12px 14px; font-size: calc(0.78rem * var(--escala-ui)); line-height: 1.45; color: var(--text-strong); backdrop-filter: blur(8px); box-shadow: 0 16px 32px -12px rgba(0,0,0,0.7); }
+
+        /* ==========================================
+           CENAS (v10) — painel flutuante, legenda e playlist
+           ========================================== */
+        #scenesPanel {
+            display: none; position: fixed; top: 58px; right: 12px; width: 360px; max-height: calc(100vh - 80px);
+            overflow-y: auto; z-index: var(--z-panel); background: var(--panel-97); border: 1px solid rgba(56,189,248,0.35);
+            border-radius: 12px; box-shadow: 0 20px 40px -12px rgba(0,0,0,0.7); backdrop-filter: blur(10px); padding: 12px 14px;
+            font-size: 0.76rem; color: var(--text-main);
+        }
+        body.atlas-theme #scenesPanel { background: rgba(255,255,255,0.98); }
+        #scenesPanel.open { display: block; }
+        .scene-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 6px; border-radius: 8px; border: 1px solid transparent; }
+        .scene-row .scene-actions { display: flex; gap: 4px; width: 100%; padding-left: 22px; }
+        .scene-row:hover { background: rgba(56,189,248,0.08); }
+        .scene-row.current { border-color: rgba(168,85,247,0.6); background: rgba(168,85,247,0.12); }
+        .scene-row .scene-name { flex: 1; font-weight: 700; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .scene-row .scene-meta { font-size: 0.62rem; color: var(--text-muted); }
+        .scene-row .mini-btn { background: var(--lift-08); border: 1px solid var(--line-14); color: var(--text-main); border-radius: 6px; padding: 2px 6px; cursor: pointer; font-size: 0.7rem; }
+        .scene-row .mini-btn:hover { background: rgba(56,189,248,0.25); }
+        #scenesPanel input[type="text"], #scenesPanel textarea, #scenesPanel input[type="number"] {
+            background: var(--surface-inset); border: 1px solid var(--line-15); color: var(--text-main); border-radius: 6px; padding: 5px 8px; font-size: 0.74rem; width: 100%;
+        }
+        body.atlas-theme #scenesPanel input, body.atlas-theme #scenesPanel textarea { background: #f1f5f9; color: #0f172a; }
+        #sceneCaption {
+            display: none; position: absolute; bottom: 58px; left: 50%; transform: translateX(-50%); z-index: var(--z-scene-raised); max-width: 70%;
+            background: var(--overlay-88); border: 1px solid rgba(168,85,247,0.5); border-radius: 10px; padding: 8px 14px;
+            color: var(--text-main); font-size: calc(0.82rem * var(--escala-ui)); line-height: 1.4; text-align: center; backdrop-filter: blur(6px); pointer-events: none;
+        }
+        #sceneCaption b { color: var(--ink-purple); display: block; font-size: 0.7rem; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px; }
+        @media (max-width: 720px) { #scenesPanel { right: 6px; left: 6px; width: auto; top: 52px; } }
+
+        /* ==========================================
+           RESPONSIVO (v9.4) — tablets e celulares
+           ========================================== */
+        /* v12.52 (D5): a doca e' palco — cresce com o fator de projecao; os botoes do cabecalho nao (quem opera esta perto). */
+        .viewport-controls-floating .action-btn { white-space: nowrap; font-size: calc(0.72rem * var(--escala-ui)); padding: calc(5px * var(--escala-ui)) calc(11px * var(--escala-ui)); }
+
+        @media (max-width: 1100px) {
+            /* v12.15: em tela estreita o desejavel e o oposto — a pagina volta a rolar. */
+            body { height: auto; overflow: visible; }
+            .context-bar { max-height: none; }
+            .workspace, .workspace.sidebar-collapsed {
+                grid-template-columns: 1fr;
+                grid-template-rows: minmax(52vh, 1fr) auto;
+                height: auto;
+                overflow: visible;
+            }
+            .workspace.sidebar-collapsed .inspector-panel { display: flex; }
+            .stage-container { border-right: none; border-bottom: 1px solid var(--border-color); min-height: 52vh; }
+            .viewport-wrapper { min-height: 46vh; }
+            .inspector-panel { max-height: none; }
+            .oscilloscope-floating { width: 160px; padding: 6px; }
+            .viewport-badge { right: 184px; }
+            .oscilloscope-floating canvas { height: 44px !important; }
+        }
+
+        @media (max-width: 720px) {
+            body { overflow-x: hidden; }
+            header { flex-wrap: wrap; gap: 6px; padding: 8px 10px; }
+            .master-nav { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .nav-tab-btn { padding: 6px 10px; font-size: 0.7rem; white-space: nowrap; }
+            .header-actions { width: 100%; justify-content: flex-end; }
+            .context-bar, .storyline-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .pills-group { flex-wrap: nowrap; }
+            .pill-btn, .step-pill-btn { white-space: nowrap; }
+            .viewport-badge { top: 8px; right: 148px; font-size: 0.62rem; padding: 4px 8px; max-width: 50%; }
+            .oscilloscope-floating { top: 8px; right: 8px; width: 132px; }
+            .viewport-controls-floating { gap: 4px; padding: 5px 8px; }
+            .viewport-controls-floating .action-btn { padding: 4px 7px; font-size: 0.64rem; }
+            .camera-presets-dock { top: 48px; }
+            #eduDisclaimer { flex-direction: column; align-items: flex-start; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Filtro de cores seguro para daltonismo (v10.4): vermelho → laranja, verde → azul-esverdeado; azul preservado -->
+    <svg width="0" height="0" style="position: absolute;" aria-hidden="true"><defs>
+        <filter id="cvdSafeFilter" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="1.00 0.00 0.00 0 0   0.35 0.65 0.00 0 0   0.00 0.35 1.00 0 0   0 0 0 1 0"/>
+        </filter>
+    </defs></svg>
+
+    <!-- 1. Header with Master 4-Mode Navigation -->
+    <header>
+        <div class="header-left">
+            <div class="app-title" style="display: flex; align-items: center; gap: 8px;">
+                <span>🧠 NeuroSim Pro 3D</span>
+                <span class="app-version-badge" id="appVersionBadge" style="font-size: 0.65rem; font-weight: 800; color: var(--accent); background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.35); padding: 2px 8px; border-radius: 12px; letter-spacing: 0.5px; text-transform: uppercase;">v—</span>
+            </div>
+        </div>
+
+        <nav class="master-nav">
+            <!-- v12.37 (Bloco 2): os quatro dominios na ordem da aula (DOMINIOS, data.js); o numero vem de MODO.<dominio> -->
+            <button class="nav-tab-btn active" id="nav-mode-1" onclick="store.dispatch({type: 'SET_MASTER_MODE', mode: MODO.neuronio})" title="Neurônio: membrana, Hodgkin-Huxley, íons, canais e toxinas, tipos de disparo">
+                <span class="tag">🧬 1.</span><span class="lbl">Neurônio</span>
+            </button>
+            <button class="nav-tab-btn" id="nav-mode-2" onclick="store.dispatch({type: 'SET_MASTER_MODE', mode: MODO.circuitos})" title="Circuitos: conectoma 2D e 3D, fisiologia e fisiopatologia">
+                <span class="tag">🧠 2.</span><span class="lbl">Circuitos</span>
+            </button>
+            <button class="nav-tab-btn" id="nav-mode-3" onclick="store.dispatch({type: 'SET_MASTER_MODE', mode: MODO.neurotransmissao})" title="Neurotransmissão: fenda 2D e 3D, os seis passos, sistemas, vesículas, receptores">
+                <span class="tag">⚡ 3.</span><span class="lbl">Neurotransmissão</span>
+            </button>
+            <button class="nav-tab-btn" id="nav-mode-4" onclick="store.dispatch({type: 'SET_MASTER_MODE', mode: MODO.psicofarmacos})" title="Psicofármacos: prescrição, ocupação, Ki, CYP450, desmame">
+                <span class="tag">💊 4.</span><span class="lbl">Psicofármacos</span>
+            </button>
+        </nav>
+
+        <div class="header-actions">
+            <button class="action-btn" id="btn-toggle-sound" onclick="toggleSound()" title="Som (tecla M)">🔊 <span class="lbl">Som</span></button>
+            <button class="action-btn" id="btn-toggle-theme" onclick="toggleColorTheme()" title="Tema claro/escuro (tecla D)">🎨 <span class="lbl">Tema</span></button>
+            <button class="action-btn" id="btn-scenes" onclick="toggleScenesPanel()" title="Cenas: salvar, reproduzir e compartilhar estados (tecla C)">🎬 <span class="lbl">Cenas</span></button>
+            <button class="action-btn" id="btn-cases" onclick="toggleCasePanel()" title="Casos clínicos roteirizados (tecla K)">🩺 <span class="lbl">Casos</span></button>
+            <button class="action-btn" id="btn-psicoeducacao" onclick="store.dispatch({type: 'TOGGLE_PSICOEDUCACAO'})" title="Psicoeducação: roteiros em linguagem leiga para pacientes e familiares, com PDF">📖 <span class="lbl">Psicoeducação</span></button>
+            <button class="action-btn" id="btn-presenter" onclick="togglePresenterMode()" title="Modo Aula: tela limpa para projeção e gravação (tecla F)">🎓 <span class="lbl">Aula</span></button>
+            <button class="action-btn" id="btn-experiments" onclick="openExperimentsModal()" title="Experimentos Prever–Observar–Explicar (tecla E)">🔮 <span class="lbl">Prever</span></button>
+            <button class="action-btn" id="btn-cvd" onclick="toggleColorVisionMode()" title="Cores seguras para daltonismo (vermelho→laranja, verde→azul-esverdeado)">👁️ <span class="lbl">Cores</span></button>
+            <button class="action-btn" id="btn-sources" onclick="openSourcesModal()" title="Referências e limitações dos modelos">📚 <span class="lbl">Fontes</span></button>
+        </div>
+    </header>
+
+    <!-- 2. Dynamic Context-Aware Sub-Bar -->
+    <div class="context-bar" id="dynamic-context-bar">
+        <!-- Injected via JavaScript based on Active Mode -->
+    </div>
+
+    <!-- 3. The 6-Step Storyline Ribbon (Passo a Passo da Neurotransmissão) -->
+    <div class="storyline-bar" id="storyline-bar">
+        <span style="font-size: calc(0.65rem * var(--escala-ui)); font-weight: 800; color: var(--ink-purple-500); margin-right: 6px;">PASSO A PASSO:</span>
+        <button class="step-pill-btn active" id="step-btn-1" onclick="store.dispatch({type: 'SET_NEURO_STEP', step: 1})">1. 🧬 Síntese & Precursores</button>
+        <button class="step-pill-btn" id="step-btn-2" onclick="store.dispatch({type: 'SET_NEURO_STEP', step: 2})">2. 📦 Empacotamento VMAT</button>
+        <button class="step-pill-btn" id="step-btn-3" onclick="store.dispatch({type: 'SET_NEURO_STEP', step: 3})">3. ⚡ PA & Influxo Ca²⁺ (Cav2.1)</button>
+        <button class="step-pill-btn" id="step-btn-4" onclick="store.dispatch({type: 'SET_NEURO_STEP', step: 4})">4. 💥 Acoplamento SNARE & Exocitose</button>
+        <button class="step-pill-btn" id="step-btn-5" onclick="store.dispatch({type: 'SET_NEURO_STEP', step: 5})">5. 🚪 Receptores & Trocas Iônicas</button>
+        <button class="step-pill-btn" id="step-btn-6" onclick="store.dispatch({type: 'SET_NEURO_STEP', step: 6})">6. 🧹 Recaptação & Degradação</button>
+    </div>
+
+    <!-- 4. Main Workspace Grid -->
+    <main class="workspace">
+        
+        <!-- Left: Visual Stage Viewport -->
+        <section class="stage-container">
+            <div class="viewport-wrapper" id="viewport-wrapper">
+                <!-- 3D Three.js WebGL Container -->
+                <div id="threejs-container" style="display: block;"></div>
+                
+                <!-- 2D High-Fidelity Synaptic Cleft Canvas -->
+                <canvas id="synapseCanvas" style="display: none;"></canvas>
+
+                <!-- 2D Whole Neuron Macro Canvas (Soma, Hillock, Axon, Ranvier, Bouton) -->
+                <canvas id="neuronCanvas" style="display: none;"></canvas>
+
+                <!-- 2D Brain Circuits & Global Connectome Canvas -->
+                                <!-- 2D Brain Circuits & Global Connectome Canvas -->
+                <canvas id="brainCanvas" style="display: none;"></canvas>
+
+                <!-- Dual / Split-Screen View Container -->
+                <!-- v12.34: legenda do conectoma em DOM (Fase 4.2) — o texto completo do que esta aceso, gravado no video -->
+            <div id="legendaConectoma" class="legenda-conectoma" aria-live="polite" data-sobre-canvas></div>
+            <div id="dualViewContainer" style="display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; flex-direction: row; gap: 8px; padding: 6px; box-sizing: border-box;">
+                    <div id="dualPaneLeft" style="flex: 1; height: 100%; position: relative; background: var(--card-70); border-radius: 8px; border: 1px solid rgba(34,197,94,0.3); overflow: hidden;">
+                        <div style="position: absolute; top: 8px; left: 10px; z-index: var(--z-scene); font-size: 0.72rem; font-weight: 700; color: var(--ink-green); background: var(--overlay-85); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(74,222,128,0.4);" id="dualLeftLabel">🟢 Cérebro Sadio (Homeostase Basal)</div>
+                        <canvas id="dualCanvasLeft" style="width: 100%; height: 100%; display: block;"></canvas>
+                    </div>
+                    <div id="dualPaneRight" style="flex: 1; height: 100%; position: relative; background: var(--card-70); border-radius: 8px; border: 1px solid rgba(239,68,68,0.35); overflow: hidden;">
+                        <div style="position: absolute; top: 8px; left: 10px; z-index: var(--z-scene); font-size: 0.72rem; font-weight: 700; color: var(--ink-red); background: var(--overlay-85); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(248,113,113,0.4);" id="dualRightLabel">🔴 Patologia Ativa (Disfunção de Vias)</div>
+                        <canvas id="dualCanvasRight" style="width: 100%; height: 100%; display: block;"></canvas>
+                    </div>
+                    <div id="dualModeControls" style="position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: var(--z-scene-raised); display: flex; gap: 6px; background: var(--overlay-90); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(56,189,248,0.4); backdrop-filter: blur(8px);">
+                        <button id="btnDualPhysio" style="background: #0284c7; color: white; border: none; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; cursor: pointer;" onclick="store.dispatch({type: 'SET_DUAL_SUBMODE', subMode: 'physio_vs_patho'})">⚖️ Sadio vs. Doença</button>
+                        <!-- v12.20: o submodo '2d_vs_3d' ainda NAO tem codigo de desenho. Escondido em vez de
+     oferecido: prometer um caminho que nao chega e exatamente o que deixou este app
+     confuso de usar. Quando for ligado, tire o display:none. -->
+                    <button id="btnDual2D3D" style="display: none; background: var(--lift-10); color: var(--text-muted); border: none; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; cursor: pointer;" onclick="store.dispatch({type: 'SET_DUAL_SUBMODE', subMode: '2d_vs_3d'})">🔄 Conectoma 2D + 3D</button>
+                    </div>
+                </div>
+
+                <!-- Legenda narrativa da cena (playlist / link) -->
+                <div id="sceneCaption"></div>
+                <!-- Selo de nível de realismo da tela -->
+                <div id="realismBadge" data-sobre-canvas class="schematic" onclick="onRealismBadgeClick()" title="Clique para ver a equação / as fontes">🧪 Esquema didático</div>
+                <!-- Resultado do experimento Prever–Observar–Explicar -->
+                <div id="poeResult"></div>
+
+                <!-- Floating Badges -->
+                <div class="viewport-badge" id="viewport-badge" data-sobre-canvas>
+                    🎮 3D WebGL • Fenda Sináptica (Dopamina)
+                </div>
+
+                <!-- Floating Oscilloscope (Hodgkin-Huxley Numerical Engine) -->
+                <div class="oscilloscope-floating" data-sobre-canvas>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: calc(0.65rem * var(--escala-ui)); font-weight: 800; color: var(--accent); margin-bottom: 4px;">
+                        <span>HODGKIN-HUXLEY V_m</span>
+                        <span style="display: flex; gap: 6px; align-items: center;"><span id="osc-voltage-val">-70.0 mV</span><button id="btn-model-panel" title="Ver a equação resolvida (⚙️ Modelo)" style="pointer-events: auto; background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.4); color: var(--accent); border-radius: 6px; padding: 1px 6px; cursor: pointer; font-size: 0.7rem;" onclick="toggleModelPanel()">⚙️</button></span>
+                    </div>
+                    <canvas id="voltageCanvas" width="204" height="60" style="width: 100%; height: calc(60px * var(--escala-ui)); background: var(--bg-primary); border-radius: 4px; border: 1px solid rgba(59,130,246,0.3);"></canvas>
+                </div>
+
+                <!-- Painel ⚙️ Modelo (v10.3): a equação que move o osciloscópio -->
+                <div id="modelPanel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <b style="color: var(--accent); font-size: 0.72rem;">📐 Hodgkin-Huxley (1952) — resolvido a cada 0,04 ms</b>
+                        <button class="mini-btn" style="background: var(--lift-08); border: 1px solid var(--line-15); color: var(--text-main); border-radius: 6px; padding: 1px 6px; cursor: pointer;" onclick="toggleModelPanel(false)">✖</button>
+                    </div>
+                    <div class="hh-eq">C<sub>m</sub> <span class="frac">dV/dt</span> = I<sub>ext</sub> − <span id="hh-term-na" class="hh-term">ḡ<sub>Na</sub>·m³h·(V−E<sub>Na</sub>)</span> − <span id="hh-term-k" class="hh-term">ḡ<sub>K</sub>·n⁴·(V−E<sub>K</sub>)</span> − <span id="hh-term-l" class="hh-term">g<sub>L</sub>·(V−E<sub>L</sub>)</span></div>
+                    <div class="hh-rows">
+                        <div class="hh-row"><span style="color: var(--ink-red);">I<sub>Na</sub></span><div class="hh-bar"><div id="hh-bar-na" style="background: #f87171;"></div></div><span id="hh-val-na">0</span></div>
+                        <div class="hh-row"><span style="color: var(--ink-blue);">I<sub>K</sub></span><div class="hh-bar"><div id="hh-bar-k" style="background: #60a5fa;"></div></div><span id="hh-val-k">0</span></div>
+                        <div class="hh-row"><span style="color: var(--ink-neutral);">I<sub>L</sub></span><div class="hh-bar"><div id="hh-bar-l" style="background: #a3a3a3;"></div></div><span id="hh-val-l">0</span></div>
+                    </div>
+                    <div class="hh-gates">comportas: m = <b id="hh-m">0.05</b> &nbsp; h = <b id="hh-h">0.60</b> &nbsp; n = <b id="hh-n">0.32</b> &nbsp;|&nbsp; E<sub>Na</sub> <b id="hh-ena">+50</b> mV &nbsp; E<sub>K</sub> <b id="hh-ek">−77</b> mV &nbsp; E<sub>L</sub> <b id="hh-el">−54</b> mV</div>
+                    <div class="hh-sliders">
+                        <label><span>ḡ<sub>Na</sub> <b id="hh-gna-val">120</b> mS/cm²</span><input type="range" min="0" max="200" step="5" value="120" oninput="setHHParam('gNaMax', this.value)"></label>
+                        <label><span>ḡ<sub>K</sub> <b id="hh-gk-val">36</b> mS/cm²</span><input type="range" min="0" max="80" step="2" value="36" oninput="setHHParam('gKMax', this.value)"></label>
+                        <label><span>C<sub>m</sub> <b id="hh-cm-val">1.0</b> µF/cm²</span><input type="range" min="0.5" max="3" step="0.1" value="1" oninput="setHHParam('Cm', this.value)"></label>
+                        <div style="display: flex; gap: 6px; align-items: center;"><button class="pill-btn" style="font-size: 0.62rem;" onclick="resetHHParams()">↺ Padrão 1952</button><button class="pill-btn" style="font-size: 0.62rem;" onclick="store.dispatch({type: 'TRIGGER_ACTION_POTENTIAL'})">⚡ Disparar</button></div>
+                    </div>
+                    <div style="margin-top:10px;border-top:1px solid rgba(56,189,248,0.3);padding-top:8px;">
+                        <div style="font-size:0.66rem;font-weight:800;color:var(--ink-violet);text-transform:uppercase;letter-spacing:0.04em;">🎚️ Padrão de disparo — Izhikevich 2003</div>
+                        <div style="font-size:0.62rem;color:var(--text-muted);line-height:1.4;margin:3px 0 6px;">Hodgkin-Huxley responde <i>como um espigão acontece</i>. Izhikevich responde <i>com que padrão a célula dispara</i>.</div>
+                        <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
+                            <select id="izh-tipo" style="flex:1;min-width:150px;background:var(--surface-inset-90);color:var(--text-strong);border:1px solid rgba(148,163,184,0.4);border-radius:6px;padding:4px 6px;font-size:0.66rem;" onchange="setIzhikevichType(this.value)"></select>
+                            <label style="font-size:0.62rem;color:var(--text-muted);display:flex;align-items:center;gap:4px;">I <input type="range" id="izh-corrente" min="0" max="40" step="1" value="10" style="width:80px;" oninput="setIzhikevichCurrent(this.value)"><b id="izh-corrente-val">10</b></label>
+                        </div>
+                        <div id="izh-resultado" style="font-size:0.64rem;color:var(--text-soft);line-height:1.5;margin-top:6px;"></div>
+                    </div>
+                    <div class="hh-note">Parâmetros clássicos do axônio gigante de lula (6,3 °C) deslocados para −65/−70 mV; E<sub>Na</sub> e E<sub>K</sub> vêm do Nernst com as concentrações do laboratório; E<sub>L</sub> acompanha o GHK. Integração de Euler explícito.</div>
+                </div>
+
+            </div>
+            <!-- v12.16: a doca de navegacao. Estava DENTRO do wrapper da cena, com position:
+                 absolute e z-index 10, e por isso podia ser coberta pelo aviso educacional e sair
+                 da tela. Em fluxo, ela e o aviso ocupam linhas diferentes do mesmo eixo e a colisao
+                 e geometricamente impossivel. No Modo Aula ela volta a flutuar, de proposito. -->
+            <!-- Floating Controls -->
+            <div class="viewport-controls-floating">
+                <div id="presenterHint"><span>🎓 Modo Aula (<b id="hintEscala">125%</b>, + e − mudam) — F sai • H oculta controles • T congela o quadro • Q equação • K casos • O órbita 3D • Espaço dispara PA • 1–5 escalas • [ ] cenas/passos • Esc sai</span></div>
+                <!-- v12.37 (Bloco 2): cada botao de escala leva data-escala; o CSS mostra so as escalas do dominio atual (data-escalas no body) -->
+                <button class="action-btn" id="btn-scale-cleft" data-escala="cleft2d" style="background: var(--control-60);" onclick="store.dispatch({type: 'SET_VISUAL_SCALE', scale: 'cleft2d'})">🔬 Fenda 2D (Íons)</button>
+                <button class="action-btn" id="btn-scale-neuron" data-escala="neuron2d" style="background: var(--control-60);" onclick="store.dispatch({type: 'SET_VISUAL_SCALE', scale: 'neuron2d'})">🧬 Neurônio Inteiro</button>
+                <button class="action-btn" id="btn-scale-brain" data-escala="brain2d" style="background: var(--control-60);" onclick="store.dispatch({type: 'SET_VISUAL_SCALE', scale: 'brain2d'})">🧠 Conectoma 2D (Sagital)</button>
+                <button class="action-btn" id="btn-scale-brain3d" data-escala="brain3d" style="background: linear-gradient(135deg, #06b6d4, #3b82f6); color: #fff;" onclick="store.dispatch({type: 'SET_VISUAL_SCALE', scale: 'brain3d'})">🌐 Cérebro 3D & DTI (360°)</button>
+                <button class="action-btn" id="btn-comparar" data-escala="comparar" style="background: var(--control-60);" onclick="store.dispatch({type: 'SET_DUAL_SUBMODE', subMode: 'physio_vs_patho'})" title="Comparar cerebro sadio e patologia lado a lado (conectoma 2D)">⚖️ Comparar</button>
+                <button class="action-btn" id="btn-scale-3d" data-escala="3d" style="background: var(--control-60);" onclick="store.dispatch({type: 'SET_VISUAL_SCALE', scale: '3d'})">💊 Fenda 3D</button>
+                <div style="display: flex; align-items: center; gap: 6px; background: var(--control-65); border: 1px solid var(--line-15); border-radius: 6px; padding: 2px 8px;">
+                    <span style="font-size: 0.68rem; font-weight: 700; color: var(--accent);">⚡ Velocidade:</span>
+                    <input type="range" min="0" max="3.0" step="0.2" value="1.0" id="slider-axon-speed" title="0 = pausa" style="width: 65px; height: 4px; accent-color: var(--accent); cursor: pointer;" oninput="store.dispatch({type: 'SET_AXON_SPEED', speed: parseFloat(this.value)})">
+                </div>
+                <button class="action-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;" onclick="store.dispatch({type: 'TRIGGER_ACTION_POTENTIAL'})">⚡ Disparar PA</button>
+                <button class="action-btn" style="background: var(--control-60);" onclick="exportViewportPNG()" title="Salvar a tela atual como imagem PNG (tecla I)">📷 PNG</button>
+            </div>
+
+            <!-- Footer Status -->
+            <div class="status-footer">
+                <span id="status-live-indicator">● Sistema: <b>Dopamina</b> • Potencial: <b>-70.0 mV</b> • Escala: <b>3D WebGL</b></span>
+                <span id="footer-version">NeuroSim Pro 3D</span>
+            </div>
+        </section>
+
+        <!-- Right: Smart Inspector Panel -->
+        <aside class="inspector-panel">
+            <div class="inspector-header">
+                <div class="inspector-title" id="inspector-main-title">Dossiê Clínico & Molecular</div>
+                <span style="font-size: 0.68rem; color: var(--ink-emerald-500); font-weight: 800;" id="inspector-badge">ATIVO</span>
+            </div>
+            <div class="inspector-content" id="inspector-content">
+                <!-- Injected via JavaScript based on Active Mode & Selections -->
+            </div>
+        </aside>
+    </main>
+
+    <!-- Master Application Script -->
+    <!-- Aplicação dividida em módulos (v12.0: nove scripts clássicos; v12.46: nove módulos ES com uma ponte). -->
+    <!-- targets.js é GERADO por scripts/build-de-para.mjs (ontologia canônica de alvos, Fase 0). -->
+    <!--
+      v12.10 — Three.js r160 como MÓDULO ES.
+      A r160 é a última revisão com build UMD (build/three.min.js), e ele já carrega um aviso de
+      depreciação; a partir da r161 ele não existe. O OrbitControls em versão clássica sumiu antes,
+      na r148. Por isso o vendor passou a ser módulo: este bloco importa e publica em window.THREE.
+      Sem npm install, sem etapa de build: continua sendo arquivo vendorizado.
+
+      v12.46 — decisão D1 do autor, "ES modules com ponte".
+      Só main.js entra por tag; ele importa os outros oito e a ponte (public/js/ponte.js). Os blocos
+      `import`/`export` de cada arquivo e a ponte são GERADOS do mapa dos módulos
+      (node scripts/mapa-modulos.mjs --escrever) — quem declara e quem usa cada nome está em
+      data/modulos.json, e a trava em tests/modulos.test.ts cobra. A ordem de avaliação continua a de
+      sempre (targets → data → store → features → engine → ui → render3d → render2d → main): o primeiro
+      import de cada arquivo é o arquivo anterior. Os handlers inline (onclick="…") e os scripts de
+      verificação chamam pelo nome, e a ponte expõe no window exatamente esses nomes — nada mais é global.
+      Módulos executam em modo estrito e depois do HTML, como os clássicos com `defer` executavam.
+    -->
+    <script type="module">
+      import * as THREE from './vendor/three.module.js';
+      import { OrbitControls } from './vendor/OrbitControls.module.js';
+      // O namespace de um módulo ES é congelado — não dá para anexar OrbitControls nele.
+      window.THREE = Object.assign(Object.create(null), THREE, { OrbitControls });
+    </script>
+    <script type="module" src="./js/main.js?v=12.66.0"></script>
+<div id="connectome-tooltip" class="floating-tooltip" style="display:none; position:fixed;"></div>
+
+    <!-- SPOTLIGHT SEARCH MODAL (Ctrl+K) -->
+    <div id="spotlightOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--overlay-80); backdrop-filter: blur(8px); z-index: var(--z-modal); justify-content: center; align-items: flex-start; padding-top: 12vh;" onclick="onSpotlightOverlayClick(event)">
+        <div style="background: var(--surface-modal); width: 90%; max-width: 620px; border-radius: 14px; border: 1px solid rgba(56,189,248,0.35); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); overflow: hidden; display: flex; flex-direction: column;">
+            <div style="padding: 14px 18px; border-bottom: 1px solid var(--line-10); display: flex; align-items: center; gap: 12px; background: var(--surface-raised-50);">
+                <span style="font-size: 1.2rem; color: var(--accent);">🔍</span>
+                <input type="text" id="spotlightInput" placeholder="Buscar fármaco, núcleo, via, receptor ou doença... (ex: Cetamina, LC, Perfurante, Pânico)" style="flex: 1; background: transparent; border: none; outline: none; color: var(--text-main); font-size: 1rem; font-family: inherit;" oninput="onSpotlightSearch(this.value)" onkeydown="onSpotlightKeyDown(event)">
+                <span style="font-size: 0.72rem; color: var(--text-muted); background: var(--lift-10); padding: 3px 7px; border-radius: 4px;">ESC</span>
+            </div>
+            <div id="spotlightResults" style="max-height: 380px; overflow-y: auto; padding: 8px;">
+                <!-- Dynamically populated -->
+            </div>
+            <div style="padding: 10px 18px; border-top: 1px solid rgba(255,255,255,0.06); background: var(--card-90); display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-faint);">
+                <span>Navegar: <b style="color:var(--text-muted);">↑ ↓</b> &nbsp; Selecionar: <b style="color:var(--text-muted);">ENTER</b></span>
+                <span>Fechar: <b style="color:var(--text-muted);">ESC</b></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CROSS-TAPERING & SWITCHING CALCULATOR MODAL -->
+    <!-- AVISO EDUCACIONAL (dispensável; persiste via localStorage) -->
+    <div id="eduDisclaimer" style="display: none; flex: 0 0 auto; background: var(--overlay-96); border-top: 1px solid rgba(245,158,11,0.5); color: var(--ink-amber-soft); font-size: 0.74rem; padding: 8px 14px; gap: 12px; align-items: center; justify-content: space-between; backdrop-filter: blur(6px);">
+        <span>⚠️ <b>Ferramenta educacional.</b> O NeuroSim Pro 3D simula mecanismos para ensino e não substitui avaliação clínica, bulas, diretrizes ou o julgamento do médico assistente. Doses, escores e ocupações são aproximações didáticas.</span>
+        <span style="display: flex; gap: 6px; flex-shrink: 0;">
+            <button class="action-btn" style="padding: 3px 9px; font-size: 0.68rem;" onclick="openSourcesModal()">📚 Fontes & Limitações</button>
+                    <button class="action-btn" style="padding: 4px 10px;" onclick="openSemiologyModal()">🔤 Índice semiológico</button>
+            <button class="action-btn" style="padding: 3px 9px; font-size: 0.68rem; background: rgba(245,158,11,0.2); border-color: rgba(245,158,11,0.5); color: var(--ink-amber-soft);" onclick="dismissDisclaimer()">Entendi</button>
+        </span>
+    </div>
+
+    <div id="laserPointer"></div>
+
+    <!-- MODAL DE EXPERIMENTOS (Prever–Observar–Explicar) -->
+    <div id="poeOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--overlay-85); backdrop-filter: blur(8px); z-index: var(--z-modal); justify-content: center; align-items: center; padding: 20px;" onclick="if (event.target && event.target.id === 'poeOverlay') closeExperimentsModal();">
+        <div id="poeCard" style="background: var(--surface-modal); width: 100%; max-width: 640px; max-height: 88vh; overflow-y: auto; border-radius: 14px; border: 1px solid rgba(168,85,247,0.5); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); padding: 18px 22px; color: var(--text-strong); font-size: 0.8rem; line-height: 1.5;"></div>
+    </div>
+
+    <!-- PLAYER DE CASOS CLÍNICOS (v11) -->
+    <div id="casePanel"></div>
+    <div id="psicoeducacaoPanel"></div>   <!-- v12.37: a Psicoeducacao virou ferramenta; conteudo por renderPsicoeducacaoPanel (ui.js), aberto por estado -->
+
+
+    <!-- PAINEL DE CENAS (v10) -->
+    <div id="scenesPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h2 style="font-size: 0.9rem; color: var(--accent); margin: 0;">🎬 Cenas & Playlist</h2>
+            <button class="action-btn" style="padding: 2px 8px; font-size: 0.68rem;" onclick="toggleScenesPanel()">✖</button>
+        </div>
+        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+            <input type="text" id="sceneNameInput" placeholder="Nome da cena (ex.: Fenda GABA + picrotoxina)" onkeydown="if (event.key === 'Enter') saveCurrentScene()">
+            <button class="action-btn" style="white-space: nowrap; background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff;" onclick="saveCurrentScene()">💾 Salvar</button>
+        </div>
+        <textarea id="sceneNoteInput" rows="2" placeholder="O que dizer nesta cena (legenda narrativa, opcional)"></textarea>
+        <div style="font-size: 0.64rem; color: var(--text-muted); margin: 4px 0 8px;">Uma cena guarda modo, sistema, escala, fármacos, circuitos, íons, patologia, tema e a câmera 3D. Tecla <b>C</b> abre/fecha este painel; <b>[</b> e <b>]</b> navegam; <b>\</b> reproduz/pausa.</div>
+
+        <div id="scenesList"></div>
+
+        <div style="border-top: 1px solid var(--line-10); margin-top: 8px; padding-top: 8px;">
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <button class="mini-btn action-btn" style="padding: 3px 8px;" onclick="playlistStep(-1)" title="Cena anterior ( [ )">⏮</button>
+                <button class="action-btn" id="playlistPlayBtn" style="padding: 3px 10px; background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff;" onclick="playlistToggle()" title="Reproduzir / pausar ( \ )">▶ Reproduzir</button>
+                <button class="mini-btn action-btn" style="padding: 3px 8px;" onclick="playlistStep(1)" title="Próxima cena ( ] )">⏭</button>
+                <label style="display: flex; align-items: center; gap: 4px; font-size: 0.68rem;">Intervalo <input type="number" id="playlistInterval" value="8" min="2" max="120" style="width: 58px;" onchange="savePlaylistPrefs()"> s</label>
+                <label style="display: flex; align-items: center; gap: 4px; font-size: 0.68rem;"><input type="checkbox" id="playlistLoop" checked onchange="savePlaylistPrefs()"> repetir</label>
+            </div>
+            <div style="border-top: 1px solid var(--line-10); margin-top: 8px; padding-top: 8px;">
+                <div style="font-size: 0.68rem; font-weight: 800; color: var(--accent); margin-bottom: 4px;">🎥 Câmera cinemática (fenda 3D / cérebro 3D)</div>
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                    <button class="action-btn" id="btn-orbit" style="padding: 3px 10px; font-size: 0.68rem;" onclick="toggleCameraOrbit()" title="Órbita suave em volta do alvo (tecla O)">🎥 Órbita</button>
+                    <label style="display: flex; align-items: center; gap: 4px; font-size: 0.66rem;"><input type="number" id="orbitSeconds" value="20" min="5" max="180" style="width: 52px;"> s</label>
+                    <label style="display: flex; align-items: center; gap: 4px; font-size: 0.66rem;"><input type="checkbox" id="orbitLoop"> contínua</label>
+                </div>
+                <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-top: 5px;">
+                    <span style="font-size: 0.62rem; color: var(--text-muted); align-self: center;">Voar para:</span>
+                    <button class="mini-btn" onclick="flyToPreset('top', 4)">Topo</button><button class="mini-btn" onclick="flyToPreset('cleft', 4)">Fenda</button><button class="mini-btn" onclick="flyToPreset('postsynaptic', 4)">Pós-sináptico</button><button class="mini-btn" onclick="flyToPreset('reset', 4)">Padrão</button>
+                    <button class="mini-btn" onclick="store.dispatch({type: 'SET_VISUAL_SCALE', scale: 'brain3d'}); setTimeout(() => flyToPreset('brainFront', 5), 100);">Cérebro frente</button><button class="mini-btn" onclick="store.dispatch({type: 'SET_VISUAL_SCALE', scale: 'brain3d'}); setTimeout(() => flyToPreset('brainSide', 5), 100);">Cérebro lado</button><button class="mini-btn" onclick="store.dispatch({type: 'SET_VISUAL_SCALE', scale: 'brain3d'}); setTimeout(() => flyToPreset('brainTop', 5), 100);">Cérebro topo</button>
+                </div>
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+                <button class="mini-btn action-btn" style="padding: 3px 8px;" onclick="exportScenesJSON()">⬇️ Exportar JSON</button>
+                <label class="mini-btn action-btn" style="padding: 3px 8px; cursor: pointer;">⬆️ Importar JSON<input type="file" accept="application/json,.json" style="display: none;" onchange="importScenesJSON(this)"></label>
+                <button class="mini-btn action-btn" style="padding: 3px 8px;" onclick="copySceneLink(null)" title="Link da tela atual, sem precisar salvar">🔗 Link da tela atual</button>
+            </div>
+            <div id="scenesStatus" style="font-size: 0.66rem; color: var(--ink-emerald-500); margin-top: 6px; min-height: 14px;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL FONTES & LIMITAÇÕES -->
+    <!-- v12.13 — Índice semiológico. Descritivo: mostra ONDE o app fala de cada termo, com o
+         trecho literal e a origem. Não afirma relação causal entre sintoma e substrato. -->
+    <div id="semiologyOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--overlay-85); backdrop-filter: blur(8px); z-index: var(--z-modal); justify-content: center; align-items: center; padding: 20px;" onclick="if (event.target && event.target.id === 'semiologyOverlay') closeSemiologyModal();">
+        <div style="background: var(--surface-modal); width: 100%; max-width: 820px; max-height: 88vh; overflow-y: auto; border-radius: 14px; border: 1px solid rgba(52,211,153,0.35); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); padding: 18px 22px; color: var(--text-strong); font-size: 0.8rem; line-height: 1.5;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <h2 style="font-size: 1rem; color: var(--ink-emerald); margin: 0;">🔤 Índice semiológico</h2>
+                <button class="action-btn" style="padding: 3px 9px;" onclick="closeSemiologyModal()">✖ Fechar</button>
+            </div>
+            <div style="font-size: 0.7rem; color: var(--text-muted); line-height: 1.45; margin-bottom: 10px;">Onde o simulador <b>já fala</b> de cada termo, com o trecho literal e a origem. <b>O índice não afirma que um sintoma decorre de um substrato</b> — ele mostra a frase que o app escreveu e diz de onde ela veio. A interpretação é sua.</div>
+            <div id="semiologyBody"></div>
+        </div>
+    </div>
+
+    <div id="sourcesOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--overlay-85); backdrop-filter: blur(8px); z-index: var(--z-modal); justify-content: center; align-items: center; padding: 20px;" onclick="if (event.target && event.target.id === 'sourcesOverlay') closeSourcesModal();">
+        <div style="background: var(--surface-modal); width: 100%; max-width: 760px; max-height: 88vh; overflow-y: auto; border-radius: 14px; border: 1px solid rgba(56,189,248,0.35); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); padding: 18px 22px; color: var(--text-strong); font-size: 0.8rem; line-height: 1.5;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h2 style="font-size: 1rem; color: var(--accent); margin: 0;">📚 Fontes & Limitações dos Modelos</h2>
+                <button class="action-btn" style="padding: 3px 9px;" onclick="closeSourcesModal()">✖ Fechar</button>
+            </div>
+            <h3 style="color: var(--ink-amber-500); font-size: 0.85rem; margin: 10px 0 4px;">O que é modelo didático (e não medida clínica)</h3>
+            <p><b>Ocupação receptorial:</b> valores de referência em doses usuais (PET/ensaios de ligação) combinados por isoterma competitiva — não consideram dose real, farmacocinética individual ou metabólitos ativos.</p>
+            <p><b>Carga serotoninérgica:</b> escore heurístico do simulador. Os <i>Critérios de Hunter</i> (Dunkley et al., 2003) são clínicos (clônus, agitação, diaforese, tremor, hiper-reflexia, hipertonia, febre) e só se aplicam ao paciente examinado.</p>
+            <p><b>QTc:</b> categorias qualitativas por fármaco; o prolongamento não é aditivo em milissegundos. Consultar CredibleMeds/AZCERT e ECG.</p>
+            <p><b>Hodgkin-Huxley:</b> parâmetros clássicos do axônio gigante de lula (1952), reescalados para −65/−70 mV; a temperatura, canais Nav1.x humanos e dendritos não são modelados. <b>GHK/Nernst:</b> permeabilidades relativas fixas (P<sub>K</sub> : P<sub>Na</sub> : P<sub>Cl</sub> = 1 : 0,04 : 0,45) a 37 °C; a bomba Na⁺/K⁺ <b>não é modelada</b>. O repouso do HH acompanha o GHK por meio de E<sub>L</sub> (E<sub>L</sub> = V<sub>GHK</sub> + 10,6 mV, calibração do modelo clássico) e assenta 1–2 mV acima dele — o cartão de equações mostra a conta.</p>
+            <p><b>Neuroanatomia e circuitos:</b> esquemas sagitais simplificados; coordenadas 2D/3D são ilustrativas, não estereotáxicas. Achados citados de modelos animais (p.ex. habênula lateral e cetamina) não estão demonstrados em humanos.</p>
+            <p><b>Doses e indicações:</b> exemplos didáticos; valores máximos, contraindicações e alertas regulatórios (boxed warnings, restrições na gestação) devem ser conferidos na bula vigente e em diretrizes.</p>
+            <h3 style="color: var(--ink-emerald-500); font-size: 0.85rem; margin: 12px 0 4px;">Referências (ABNT) — geradas a partir das fontes atribuídas aos dados <span id="referencesTotal" style="color: var(--text-faint); font-weight: 400; font-size: 0.7rem;"></span></h3>
+            <ol id="referencesList" style="padding-left: 18px; display: flex; flex-direction: column; gap: 4px;">
+            </ol>
+            <p style="margin-top: 10px; color: var(--text-muted); font-size: 0.72rem;">Autor: Matheus Guimarães Gomes Rangel — Cachoeiro de Itapemirim, ES. Material educacional; reporte erros para revisão contínua.</p>
+        </div>
+    </div>
+
+    <div id="crossTaperingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--overlay-85); backdrop-filter: blur(8px); z-index: var(--z-modal); justify-content: center; align-items: center; padding: 20px;" onclick="onCrossTaperingOverlayClick(event)">
+        <div style="background: var(--surface-modal); width: 95%; max-width: 780px; max-height: 90vh; border-radius: 14px; border: 1px solid rgba(56,189,248,0.35); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); overflow-y: auto; display: flex; flex-direction: column;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid var(--line-10); display: flex; justify-content: space-between; align-items: center; background: var(--surface-raised-60);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.4rem;">💊</span>
+                    <div>
+                        <h3 style="margin: 0; color: var(--text-main); font-size: 1.1rem; font-weight: 700;">Calculadora de Cross-Tapering & Troca de Psicofármacos</h3>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Baseado no Guia de Troca de Antidepressivos e Antipsicóticos de Stephen M. Stahl</div>
+                    </div>
+                </div>
+                <button style="background: transparent; border: none; color: var(--text-muted); font-size: 1.3rem; cursor: pointer;" onclick="closeCrossTaperingModal()">✕</button>
+            </div>
+            
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div style="background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); padding: 12px; border-radius: 8px;">
+                        <label style="font-size: 0.78rem; font-weight: 700; color: var(--ink-red); display: block; margin-bottom: 6px;">1. Fármaco de Origem (Desmame)</label>
+                        <select id="switchDrugFrom" style="width: 100%; background: var(--surface-field); color: var(--text-main); border: 1px solid var(--line-15); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem;" onchange="updateCrossTaperingCalculations()">
+                            <option value="fluoxetina">Fluoxetina (t½ ~48-96h, Norfluoxetina ~7-15 dias)</option>
+                            <option value="venlafaxina">Venlafaxina (t½ ~5h, Risco de Descontinuação Alto)</option>
+                            <option value="paroxetina">Paroxetina (t½ ~21h, Risco de Descontinuação Alto)</option>
+                            <option value="sertralina">Sertralina (t½ ~26h)</option>
+                            <option value="escitalopram">Escitalopram (t½ ~30h)</option>
+                            <option value="duloxetina">Duloxetina (t½ ~12h)</option>
+                            <option value="clomipramina">Clomipramina (Tricíclico / Risco Cardíaco)</option>
+                            <option value="olanzapina">Olanzapina (Antipsicótico Atípico)</option>
+                            <option value="quetiapina">Quetiapina (Antipsicótico Atípico)</option>
+                            <option value="risperidona">Risperidona (Antipsicótico D2 Potente)</option>
+                        </select>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+                            <span style="font-size: 0.75rem; color: var(--text-soft);">Dose Atual:</span>
+                            <input type="text" id="switchDoseFrom" value="40 mg/dia" style="flex: 1; background: var(--surface-field); color: var(--text-main); border: 1px solid var(--line-15); border-radius: 4px; padding: 4px 8px; font-size: 0.8rem;" oninput="updateCrossTaperingCalculations()">
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); padding: 12px; border-radius: 8px;">
+                        <label style="font-size: 0.78rem; font-weight: 700; color: var(--ink-green); display: block; margin-bottom: 6px;">2. Fármaco de Destino (Titulação)</label>
+                        <select id="switchDrugTo" style="width: 100%; background: var(--surface-field); color: var(--text-main); border: 1px solid var(--line-15); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem;" onchange="updateCrossTaperingCalculations()">
+                            <option value="desvenlafaxina">Desvenlafaxina (IRSN - Início sem CYP2D6)</option>
+                            <option value="vortioxetina">Vortioxetina (Multimodal 5-HT1A/3/7)</option>
+                            <option value="duloxetina">Duloxetina (IRSN Dual)</option>
+                            <option value="sertralina">Sertralina (ISRS)</option>
+                            <option value="escitalopram">Escitalopram (ISRS Puro)</option>
+                            <option value="bupropiona">Bupropiona (NDRI - Sem disfunção sexual)</option>
+                            <option value="mirtazapina">Mirtazapina (NaSSA - Alfa-2 / 5-HT2/3)</option>
+                            <option value="aripiprazol">Aripiprazol (Agonista Parcial D2)</option>
+                            <option value="quetiapina">Quetiapina (Atípico)</option>
+                            <option value="tranilcipromina">Tranilcipromina (IMAO Irreversível - EXIGE WASHOUT)</option>
+                        </select>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+                            <span style="font-size: 0.75rem; color: var(--text-soft);">Dose Alvo:</span>
+                            <input type="text" id="switchDoseTo" value="50 mg/dia" style="flex: 1; background: var(--surface-field); color: var(--text-main); border: 1px solid var(--line-15); border-radius: 4px; padding: 4px 8px; font-size: 0.8rem;" oninput="updateCrossTaperingCalculations()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Recommendation Card -->
+                <div id="switchStrategyCard" style="background: var(--surface-raised-70); border-radius: 8px; border-left: 4px solid var(--accent); padding: 12px 16px;">
+                    <!-- Dynamically populated strategy -->
+                </div>
+
+                <!-- Timeline Visualizer Chart -->
+                <div style="background: var(--bg-primary); border-radius: 8px; border: 1px solid var(--line-10); padding: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-main);">📊 Curva de Transição Temporal & Níveis Plasmáticos (Semanas 1 a 4)</span>
+                        <div style="display: flex; gap: 12px; font-size: 0.72rem;">
+                            <span style="color: var(--ink-red);">● Fármaco A (Desmame)</span>
+                            <span style="color: var(--ink-green);">● Fármaco B (Titulação)</span>
+                        </div>
+                    </div>
+                    <canvas id="crossTaperingCanvas" width="700" height="180" style="width: 100%; height: 180px; display: block;"></canvas>
+                </div>
+
+                <!-- Regime posológico & estado estacionário (v10.3) -->
+                <div style="background: var(--bg-primary); border-radius: 8px; border: 1px solid var(--line-10); padding: 14px; margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+                        <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-main);">📈 Regime posológico: acúmulo, estado estacionário e washout (1 compartimento)</span>
+                        <span id="pkSummary" style="font-size: 0.7rem; color: var(--text-muted);"></span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 8px; font-size: 0.72rem; color: var(--text-soft);">
+                        <label>Fármaco (t½ de referência)<select id="pkDrug" style="width: 100%; background: var(--surface-field); color: var(--text-main); border: 1px solid var(--line-15); border-radius: 6px; padding: 4px 6px;" onchange="pkPresetFromDrug()"></select></label>
+                        <label>Meia-vida t½ (h) <input type="number" id="pkHalfLife" value="26" min="1" max="800" step="1" style="width: 100%; background: var(--surface-field); color: var(--text-main); border: 1px solid var(--line-15); border-radius: 6px; padding: 4px 6px;" oninput="updateDosingRegimen()"></label>
+                        <label>Intervalo entre doses τ (h) <input type="number" id="pkInterval" value="24" min="4" max="168" step="1" style="width: 100%; background: var(--surface-field); color: var(--text-main); border: 1px solid var(--line-15); border-radius: 6px; padding: 4px 6px;" oninput="updateDosingRegimen()"></label>
+                        <label>Dias de uso antes de suspender <input type="number" id="pkDays" value="21" min="3" max="120" step="1" style="width: 100%; background: var(--surface-field); color: var(--text-main); border: 1px solid var(--line-15); border-radius: 6px; padding: 4px 6px;" oninput="updateDosingRegimen()"></label>
+                    </div>
+                    <canvas id="pkCanvas" width="700" height="170" style="width: 100%; height: 170px; display: block;"></canvas>
+                    <div id="pkNote" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; line-height: 1.4;"></div>
+                </div>
+
+                <!-- Safety Warnings & Clinical Rules -->
+                <div id="switchWarningCard" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); border-radius: 8px; padding: 12px 16px; font-size: 0.82rem; color: var(--ink-amber-soft);">
+                    <!-- Dynamically populated safety warnings -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
