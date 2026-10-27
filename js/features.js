@@ -1,23 +1,23 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import './store.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { TARGETS_CANON } from './targets.js?v=12.66.1';
+import './store.js?v=12.76.2';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { TARGETS_CANON } from './targets.js?v=12.76.2';
 import {
     APP_VERSION, DOMINIOS, ESCALAS_DE_PROJECAO, MODO, SEMIOLOGY_TERMS, clinicalCasesData, dominioDoModo,
     semiologyCounts, semiologyOccurrences, systemsData
-} from './data.js?v=12.66.1';
-import { patientStoriesData } from './dominios/psicoeducacao.js?v=12.66.1';
-import { recalculateElectrophysiology, toggleModelPanel } from './dominios/neuronio.js?v=12.66.1';
+} from './data.js?v=12.76.2';
+import { patientStoriesData } from './dominios/psicoeducacao.js?v=12.76.2';
+import { recalculateElectrophysiology, toggleModelPanel } from './dominios/neuronio.js?v=12.76.2';
 import {
     drugBindingAffinities, drugsForTarget, hasKiData, normalizarFarmacoAntigo, openCrossTaperingModal, prescrever,
     updateCrossTaperingCalculations
-} from './dominios/psicofarmacos.js?v=12.66.1';
-import { escolherSistema } from './dominios/neurotransmissao.js?v=12.66.1';
-import { circuitsForTarget, neurostimProtocolsData, pathologyProfilesData } from './dominios/circuitos.js?v=12.66.1';
-import { ESCALAS_VISUAIS, registerEffect, store } from './store.js?v=12.66.1';
-import { playBioTone } from './engine.js?v=12.66.1';
-import { renderInspector } from './ui.js?v=12.66.1';
-import { camera3D, controls3D, renderer3D, scene3D } from './render3d.js?v=12.66.1';
-import { openSourcesModal } from './main.js?v=12.66.1';
+} from './dominios/psicofarmacos.js?v=12.76.2';
+import { escolherSistema } from './dominios/neurotransmissao.js?v=12.76.2';
+import { circuitsForTarget, neurostimProtocolsData, pathologyProfilesData } from './dominios/circuitos.js?v=12.76.2';
+import { ESCALAS_VISUAIS, registerEffect, store } from './store.js?v=12.76.2';
+import { playBioTone } from './engine.js?v=12.76.2';
+import { renderInspector } from './ui.js?v=12.76.2';
+import { camera3D, controls3D, renderer3D, scene3D } from './render3d.js?v=12.76.2';
+import { openSourcesModal } from './main.js?v=12.76.2';
 // ── fim dos módulos ──
 /* NeuroSim Pro 3D — features.js. Gerado pela divisão da v12.0; a ordem de carga é definida em Simulador_Neuronio_Interativo.html.
    Scripts clássicos compartilham o escopo global: const/let/function de um arquivo são visíveis nos seguintes. */

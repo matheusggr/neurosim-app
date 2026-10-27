@@ -1,7 +1,7 @@
 # NeuroSim Pro 3D — publicação
 
 Este repositório é **gerado**: contém apenas a pasta `public/` do repositório principal (privado), copiada por
-`npm run publicar` a cada release (esta: v12.66.1, commit 069b98d). Não edite aqui — qualquer mudança é
+`npm run publicar` a cada release (esta: v12.76.2, commit 35bbbae). Não edite aqui — qualquer mudança é
 sobrescrita na próxima publicação.
 
 App: https://matheusggr.github.io/neurosim-app/

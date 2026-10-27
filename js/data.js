@@ -1,18 +1,18 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import './targets.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { TARGETS_CANON } from './targets.js?v=12.66.1';
-import { patientStoriesData } from './dominios/psicoeducacao.js?v=12.66.1';
-import { hhSolver } from './dominios/neuronio.js?v=12.66.1';
+import './targets.js?v=12.76.2';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { TARGETS_CANON } from './targets.js?v=12.76.2';
+import { patientStoriesData } from './dominios/psicoeducacao.js?v=12.76.2';
+import { hhSolver } from './dominios/neuronio.js?v=12.76.2';
 import {
     antidepressantsData, antipsychoticsData, drugBindingAffinities, moodAndAnxioData
-} from './dominios/psicofarmacos.js?v=12.66.1';
-import { biochemicalCyclesData, molecularAdvancesData, particlePool } from './dominios/neurotransmissao.js?v=12.66.1';
+} from './dominios/psicofarmacos.js?v=12.76.2';
+import { biochemicalCyclesData, molecularAdvancesData, particlePool } from './dominios/neurotransmissao.js?v=12.76.2';
 import {
-    brainCircuitsData, canonicalSubTractsData, neurostimProtocolsData, nucleiCatalog, nucleiClinicalData,
-    pathologyProfilesData, tractsCatalog
-} from './dominios/circuitos.js?v=12.66.1';
-import { experiments } from './features.js?v=12.66.1';
-import { scene3D } from './render3d.js?v=12.66.1';
+    CIRCUIT_TOURS, brainCircuitsData, canonicalSubTractsData, neurostimProtocolsData, nucleiCatalog,
+    nucleiClinicalData, pathologyProfilesData, tractsCatalog
+} from './dominios/circuitos.js?v=12.76.2';
+import { experiments } from './features.js?v=12.76.2';
+import { scene3D } from './render3d.js?v=12.76.2';
 // ── fim dos módulos ──
 /* NeuroSim Pro 3D — data.js. Gerado pela divisão da v12.0; a ordem de carga é definida em Simulador_Neuronio_Interativo.html.
    Scripts clássicos compartilham o escopo global: const/let/function de um arquivo são visíveis nos seguintes. */
@@ -20,7 +20,7 @@ import { scene3D } from './render3d.js?v=12.66.1';
 // 0. VERSÃO ÚNICA DO APLICATIVO
 //    (sincronizada com package.json, manifest e service worker por scripts/sync-version.mjs)
 // ==========================================
-const APP_VERSION = '12.66.1';
+const APP_VERSION = '12.76.2';
 const APP_BUILD_LABEL = 'O filtro é da camada';
 
 // =========================================================
@@ -554,6 +554,57 @@ const SOURCES = {
     lu2016: "LU, H.-C.; MACKIE, K. An introduction to the endogenous cannabinoid system. <i>Biological Psychiatry</i>, v. 79, n. 7, p. 516-525, 2016. DOI 10.1016/j.biopsych.2015.07.028. PMID 26698193.",
     fairbanks2023: "FAIRBANKS, C. A.; PETERSON, C. D. The opioid receptor: emergence through millennia of pharmaceutical sciences. <i>Frontiers in Pain Research</i>, v. 4, p. 960389, 2023. DOI 10.3389/fpain.2023.960389. PMID 38028425.",
     burnstock2018: "BURNSTOCK, G. Purine and purinergic receptors. <i>Brain and Neuroscience Advances</i>, v. 2, 2018. DOI 10.1177/2398212818817494. PMID 32166165.",
+    // v12.71 — fontes dos perfis Mania, Pânico, TEPT, TDAH e TOC (PubMed, PMID conferido em 21/10/2026;
+    // formato Vancouver, como o PubMed devolve). Proveniência: data/fontes/perfis_pubmed.json.
+    ahmari2013: "Ahmari SE, Spellman T, Douglass NL, et al. Repeated cortico-striatal stimulation generates persistent OCD-like behavior. Science. 2013;340(6137):1234-1239. DOI 10.1126/science.1234733. PMID 23744948. [animal]",
+    ashok2017: "Ashok AH, Marques TR, Jauhar S, et al. The dopamine hypothesis of bipolar affective disorder: the state of the art and implications for treatment. Mol Psychiatry. 2017;22(5):666-679. DOI 10.1038/mp.2017.16. PMID 28289283.",
+    bremner1997: "Bremner JD, Licinio J, Darnell A, et al. Elevated CSF corticotropin-releasing factor concentrations in posttraumatic stress disorder. Am J Psychiatry. 1997;154(5):624-629. DOI 10.1176/ajp.154.5.624. PMID 9137116.",
+    chakrabarty2005: "Chakrabarty K, Bhattacharyya S, Christopher R, Khanna S. Glutamatergic dysfunction in OCD. Neuropsychopharmacology. 2005;30(9):1735-1740. DOI 10.1038/sj.npp.1300733. PMID 15841109.",
+    charney1984: "Charney DS, Heninger GR, Breier A. Noradrenergic function in panic anxiety. Effects of yohimbine in healthy subjects and patients with agoraphobia and panic disorder. Arch Gen Psychiatry. 1984;41(8):751-763. DOI 10.1001/archpsyc.1984.01790190025003. PMID 6742977.",
+    delcampo2011: "Del Campo N, Chamberlain SR, Sahakian BJ, Robbins TW. The roles of dopamine and noradrenaline in the pathophysiology and treatment of attention-deficit/hyperactivity disorder. Biol Psychiatry. 2011;69(12):e145-157. DOI 10.1016/j.biopsych.2011.02.036. PMID 21550021. [humano + animal]",
+    duits2015: "Duits P, Cath DC, Lissek S, et al. Updated meta-analysis of classical fear conditioning in the anxiety disorders. Depress Anxiety. 2015;32(4):239-253. DOI 10.1002/da.22353. PMID 25703487.",
+    ernst1998: "Ernst M, Zametkin AJ, Matochik JA, Jons PH, Cohen RM. DOPA decarboxylase activity in attention deficit hyperactivity disorder adults. A [fluorine-18]fluorodopa positron emission tomographic study. J Neurosci. 1998;18(15):5901-5907. DOI 10.1523/JNEUROSCI.18-15-05901.1998. PMID 9671677.",
+    etkin2007: "Etkin A, Wager TD. Functional neuroimaging of anxiety: a meta-analysis of emotional processing in PTSD, social anxiety disorder, and specific phobia. Am J Psychiatry. 2007;164(10):1476-1488. DOI 10.1176/appi.ajp.2007.07030504. PMID 17898336.",
+    feinstein2013: "Feinstein JS, Buzza C, Hurlemann R, et al. Fear and panic in humans with bilateral amygdala damage. Nat Neurosci. 2013;16(3):270-272. DOI 10.1038/nn.3323. PMID 23377128.",
+    // v12.76 — original de 1937 (Arch Neurol Psychiatry 38:725-743); o PMID e a reimpressao de 1995, conferida no PubMed em 23/10/2026.
+    papez1937: "Papez JW. A proposed mechanism of emotion. Arch Neurol Psychiatry. 1937;38(4):725-743. Reimpresso em: J Neuropsychiatry Clin Neurosci. 1995;7(1):103-112. DOI 10.1176/jnp.7.1.103. PMID 7711480.",
+    arnstenpliszka2011: "Arnsten AF, Pliszka SR. Catecholamine influences on prefrontal cortical function: relevance to treatment of attention deficit/hyperactivity disorder and related disorders. Pharmacol Biochem Behav. 2011;99(2):211-216. DOI 10.1016/j.pbb.2011.01.020. PMID 21295057.",
+    foland2008: "Foland LC, Altshuler LL, Bookheimer SY, et al. Evidence for deficient modulation of amygdala response by prefrontal cortex in bipolar mania. Psychiatry Res. 2008;162(1):27-37. DOI 10.1016/j.pscychresns.2007.04.007. PMID 18063349.",
+    geracioti2001: "Geracioti TD, Baker DG, Ekhator NN, et al. CSF norepinephrine concentrations in posttraumatic stress disorder. Am J Psychiatry. 2001;158(8):1227-1230. DOI 10.1176/appi.ajp.158.8.1227. PMID 11481155.",
+    gonon2009: "Gonon F. The dopaminergic hypothesis of attention-deficit/hyperactivity disorder needs re-examining. Trends Neurosci. 2009;32(1):2-8. DOI 10.1016/j.tins.2008.09.010. PMID 18986716. [humano + animal]",
+    gorman2000: "Gorman JM, Kent JM, Sullivan GM, Coplan JD. Neuroanatomical hypothesis of panic disorder, revised. Am J Psychiatry. 2000;157(4):493-505. DOI 10.1176/appi.ajp.157.4.493. PMID 10739407. [base animal]",
+    gowatch2024: "Gowatch LC, Evanski JM, Ely SL, et al. Endocannabinoids and stress-related neuropsychiatric disorders: a systematic review and meta-analysis of basal concentrations and response to acute psychosocial stress. Cannabis Cannabinoid Res. 2024;9(5):1217-1234. DOI 10.1089/can.2023.0246. PMID 38683635.",
+    harricharan2016: "Harricharan S, Rabellino D, Frewen PA, et al. fMRI functional connectivity of the periaqueductal gray in PTSD and its dissociative subtype. Brain Behav. 2016;6(12):e00579. DOI 10.1002/brb3.579. PMID 28032002.",
+    hill2013: "Hill MN, Bierer LM, Makotkine I, et al. Reductions in circulating endocannabinoid levels in individuals with post-traumatic stress disorder following exposure to the World Trade Center attacks. Psychoneuroendocrinology. 2013;38(12):2952-2961. DOI 10.1016/j.psyneuen.2013.08.004. PMID 24035186.",
+    ledoux1988: "LeDoux JE, Iwata J, Cicchetti P, Reis DJ. Different projections of the central amygdaloid nucleus mediate autonomic and behavioral correlates of conditioned fear. J Neurosci. 1988;8(7):2517-2529. DOI 10.1523/JNEUROSCI.08-07-02517.1988. PMID 2854842. [animal]",
+    mccall2017: "McCall JG, Siuda ER, Bhatti DL, et al. Locus coeruleus to basolateral amygdala noradrenergic projections promote anxiety-like behavior. eLife. 2017;6:e18247. DOI 10.7554/eLife.18247. PMID 28708061. [animal]",
+    meewisse2007: "Meewisse ML, Reitsma JB, de Vries GJ, Gersons BP, Olff M. Cortisol and post-traumatic stress disorder in adults: systematic review and meta-analysis. Br J Psychiatry. 2007;191:387-392. DOI 10.1192/bjp.bp.106.024877. PMID 17978317.",
+    mehrtabar2026: "Mehrtabar S, Ajdari A, Azinfar A, et al. Functional brain abnormalities in panic disorder: a systematic review of functional magnetic resonance imaging studies. Psychiatry Res Neuroimaging. 2026;364:112334. DOI 10.1016/j.pscychresns.2026.112334. PMID 42753522.",
+    milad2009: "Milad MR, Pitman RK, Ellis CB, et al. Neurobiological basis of failure to recall extinction memory in posttraumatic stress disorder. Biol Psychiatry. 2009;66(12):1075-1082. DOI 10.1016/j.biopsych.2009.06.026. PMID 19748076.",
+    miladrauch2012: "Milad MR, Rauch SL. Obsessive-compulsive disorder: beyond segregated cortico-striatal pathways. Trends Cogn Sci. 2012;16(1):43-51. DOI 10.1016/j.tics.2011.11.003. PMID 22138231.",
+    naegeli2018: "Naegeli C, Zeffiro T, Piccirelli M, et al. Locus coeruleus activity mediates hyperresponsiveness in posttraumatic stress disorder. Biol Psychiatry. 2018;83(3):254-262. DOI 10.1016/j.biopsych.2017.08.021. PMID 29100627.",
+    neumeister2013: "Neumeister A, Normandin MD, Pietrzak RH, et al. Elevated brain cannabinoid CB1 receptor availability in post-traumatic stress disorder: a positron emission tomography study. Mol Psychiatry. 2013;18(9):1034-1040. DOI 10.1038/mp.2013.61. PMID 23670490.",
+    nicholson2017: "Nicholson AA, Friston KJ, Zeidman P, et al. Dynamic causal modeling in PTSD and its dissociative subtype: bottom-up versus top-down processing within fear and emotion regulation circuitry. Hum Brain Mapp. 2017;38(11):5551-5561. DOI 10.1002/hbm.23748. PMID 28836726.",
+    nikolaus2019: "Nikolaus S, Mamlins E, Hautzel H, Müller HW. Acute anxiety disorder, major depressive disorder, bipolar disorder and schizophrenia are related to different patterns of nigrostriatal and mesolimbic dopamine dysfunction. Rev Neurosci. 2019;30(4):381-426. DOI 10.1515/revneuro-2018-0037. PMID 30269107.",
+    norman2019: "Norman LJ, Taylor SF, Liu Y, et al. Error processing and inhibitory control in obsessive-compulsive disorder: a meta-analysis using statistical parametric maps. Biol Psychiatry. 2019;85(9):713-725. DOI 10.1016/j.biopsych.2018.11.010. PMID 30595231.",
+    nusslock2012: "Nusslock R, Almeida JR, Forbes EE, et al. Waiting to win: elevated striatal and orbitofrontal cortical activity during reward anticipation in euthymic bipolar disorder adults. Bipolar Disord. 2012;14(3):249-260. DOI 10.1111/j.1399-5618.2012.01012.x. PMID 22548898.",
+    paulus2006: "Paulus MP, Stein MB. An insular view of anxiety. Biol Psychiatry. 2006;60(4):383-387. DOI 10.1016/j.biopsych.2006.03.042. PMID 16780813.",
+    phillips2014: "Phillips ML, Swartz HA. A critical appraisal of neuroimaging studies of bipolar disorder: toward a new conceptualization of underlying neural circuitry and a road map for future research. Am J Psychiatry. 2014;171(8):829-843. DOI 10.1176/appi.ajp.2014.13081008. PMID 24626773.",
+    pittenger2011: "Pittenger C, Bloch MH, Williams K. Glutamate abnormalities in obsessive compulsive disorder: neurobiology, pathophysiology, and treatment. Pharmacol Ther. 2011;132(3):314-332. DOI 10.1016/j.pharmthera.2011.09.006. PMID 21963369. [humano + animal]",
+    reimold2007: "Reimold M, Smolka MN, Zimmer A, et al. Reduced availability of serotonin transporters in obsessive-compulsive disorder correlates with symptom severity - a [11C]DASB PET study. J Neural Transm. 2007;114(12):1603-1609. DOI 10.1007/s00702-007-0785-6. PMID 17713719.",
+    schreiter2016: "Schreiter S, Spengler S, Willert A, et al. Neural alterations of fronto-striatal circuitry during reward anticipation in euthymic bipolar disorder. Psychol Med. 2016;46(15):3187-3198. DOI 10.1017/S0033291716001963. PMID 27573157.",
+    shephard2021: "Shephard E, Stern ER, van den Heuvel OA, et al. Toward a neurocircuit-based taxonomy to guide treatment of obsessive-compulsive disorder. Mol Psychiatry. 2021;26(9):4583-4604. DOI 10.1038/s41380-020-01007-8. PMID 33414496.",
+    simpson2003: "Simpson HB, Lombardo I, Slifstein M, et al. Serotonin transporters in obsessive-compulsive disorder: a positron emission tomography study with [11C]McN 5652. Biol Psychiatry. 2003;54(12):1414-1421. DOI 10.1016/s0006-3223(03)00544-4. PMID 14675806.",
+    simpson2012: "Simpson HB, Shungu DC, Bender J, et al. Investigation of cortical glutamate-glutamine and γ-aminobutyric acid in obsessive-compulsive disorder by proton magnetic resonance spectroscopy. Neuropsychopharmacology. 2012;37(12):2684-2692. DOI 10.1038/npp.2012.132. PMID 22850733.",
+    spies2015: "Spies M, Knudsen GM, Lanzenberger R, Kasper S. The serotonin transporter in psychiatric disorders: insights from PET imaging. Lancet Psychiatry. 2015;2(8):743-755. DOI 10.1016/S2215-0366(15)00232-1. PMID 26249305.",
+    strakowski2012: "Strakowski SM, Adler CM, Almeida J, et al. The functional neuroanatomy of bipolar disorder: a consensus model. Bipolar Disord. 2012;14(4):313-325. DOI 10.1111/j.1399-5618.2012.01022.x. PMID 22631617.",
+    sylvester2012: "Sylvester CM, Corbetta M, Raichle ME, et al. Functional network dysfunction in anxiety and anxiety disorders. Trends Neurosci. 2012;35(9):527-535. DOI 10.1016/j.tins.2012.04.012. PMID 22658924.",
+    ulke2019: "Ulke C, Rullmann M, Huang J, et al. Adult attention-deficit/hyperactivity disorder is associated with reduced norepinephrine transporter availability in right attention networks: a (S,S)-O-[11C]methylreboxetine positron emission tomography study. Transl Psychiatry. 2019;9(1):301. DOI 10.1038/s41398-019-0619-y. PMID 31732713.",
+    vanbockstaele1998: "Van Bockstaele EJ, Colago EE, Valentino RJ. Amygdaloid corticotropin-releasing factor targets locus coeruleus dendrites: substrate for the co-ordination of emotional and cognitive limbs of the stress response. J Neuroendocrinol. 1998;10(10):743-757. DOI 10.1046/j.1365-2826.1998.00254.x. PMID 9792326. [animal]",
+    volkow2009: "Volkow ND, Wang GJ, Kollins SH, et al. Evaluating dopamine reward pathway in ADHD: clinical implications. JAMA. 2009;302(10):1084-1091. DOI 10.1001/jama.2009.1308. PMID 19738093.",
+    whiteside2004: "Whiteside SP, Port JD, Abramowitz JS. A meta-analysis of functional neuroimaging in obsessive-compulsive disorder. Psychiatry Res. 2004;132(1):69-79. DOI 10.1016/j.pscychresns.2004.07.001. PMID 15546704.",
+    yatham2002: "Yatham LN, Liddle PF, Shiah IS, et al. PET study of [18F]6-fluoro-L-dopa uptake in neuroleptic- and mood-stabilizer-naive first-episode nonpsychotic mania: effects of treatment with divalproex sodium. Am J Psychiatry. 2002;159(5):768-774. DOI 10.1176/appi.ajp.159.5.768. PMID 11986130.",
+    yip2015: "Yip SW, Worhunsky PD, Rogers RD, Goodwin GM. Hypoactivation of the ventral and dorsal striatum during reward and loss anticipation in antipsychotic and mood stabilizer-naive bipolar disorder. Neuropsychopharmacology. 2015;40(3):658-666. DOI 10.1038/npp.2014.215. PMID 25139065.",
 };
 // Fontes por bloco de dados (aplicadas a todos os itens do bloco; itens podem sobrescrever com `source` próprio)
 const BLOCK_SOURCES = {
@@ -573,6 +624,9 @@ function collectUsedSources() {
     BLOCK_SOURCES.hodgkinHuxley.forEach(k => bump(k));
     Object.values(nucleiCatalog).forEach(n => (n.source || []).forEach(k => bump(k)));
     tractsCatalog.forEach(t => (t.source || []).forEach(k => bump(k)));
+    // v12.76 — fonte própria de uma camada (hoje só 'panic') e as fontes de cada passo dos roteiros de aula
+    Object.values(brainCircuitsData).forEach(c => (c.source || []).forEach(k => bump(k)));
+    Object.values(CIRCUIT_TOURS).forEach(r => r.passos.forEach(p => [...(p.fonte || []), ...((p.contraria && p.contraria.fonte) || [])].forEach(k => bump(k))));
     return Object.entries(counts).sort((x, y) => y[1] - x[1]);
 }
 function renderReferencesList() {

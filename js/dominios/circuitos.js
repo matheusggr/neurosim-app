@@ -1,10 +1,10 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import '../dominios/neurotransmissao.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import '../dominios/neurotransmissao.js?v=12.76.2';   // primeiro: garante a ordem de avaliação dos scripts clássicos
 import {
     CAMADA_DO_SISTEMA, CORES_DOS_SISTEMAS, TRACO_DO_CIRCUITO, clarearCor, ehCamadaDeSistema
-} from '../data.js?v=12.66.1';
-import { store } from '../store.js?v=12.66.1';
-import { fatorDeEscalaUI } from '../engine.js?v=12.66.1';
+} from '../data.js?v=12.76.2';
+import { store } from '../store.js?v=12.76.2';
+import { fatorDeEscalaUI } from '../engine.js?v=12.76.2';
 // ── fim dos módulos ──
 /*
  * DOMINIO CIRCUITOS — um palco inteiro num arquivo so (decisao D3 do autor, "pastas por dominio").
@@ -74,7 +74,7 @@ const brainCircuitsData = {
     },
     cholinergic: {
         name: "Sistema Colinérgico (Meynert Ch4 & Ch1-Ch3)",
-        desc: "• <b>Meynert (Ch4) ➔ Neocórtex & Lobo Temporal:</b> Atenção seletiva, memória recente e reconhecimento facial (receptores M1 e α7);<br>• <b>Septo Medial ➔ Hipocampo:</b> Gerador do Ritmo Theta.",
+        desc: "• <b>Meynert (Ch4) ➔ Neocórtex & Lobo Temporal:</b> Atenção seletiva, memória recente e reconhecimento facial (receptores M1 e α7);<br>• <b>Septo Medial ➔ Hipocampo:</b> Modulação do Ritmo Theta (o marca-passo septal é sobretudo GABAérgico).",
         clinical: "A perda de neurônios de Meynert na Doença de Alzheimer é tratada com anticolinesterásicos (Donepezil, Rivastigmina, Galantamina)."
     },
     cstc: {
@@ -85,7 +85,7 @@ const brainCircuitsData = {
     dmn: {
         name: "🌌 Rede em Modo Padrão (Default Mode Network - DMN)",
         desc: "• <b>Conectividade Principal:</b> Precúneo & Córtex Cingulado Posterior (PCC) ⟷ Córtex Pré-Frontal Ventromedial (vmPFC) ⟷ Lóbulo Parietal Inferior ⟷ Hipocampo.<br>• Ativa durante o repouso mental; substrato da autoconsciência, narrativa autobiográfica do 'Eu' e imaginação.",
-        clinical: "Hiperconectada na depressão (ruminação autocrítica crônica); o agonismo 5-HT2A por Psicodélicos (Psilocibina/LSD) desintegra temporariamente a DMN ('Dissolução do Ego'), promovendo neuroplasticidade."
+        clinical: "Descrita como hiperconectada na depressão, associada à ruminação autocrítica; em estudos de neuroimagem, o agonismo 5-HT2A por Psicodélicos (Psilocibina/LSD) reduz temporariamente a integração da DMN ('Dissolução do Ego') — a ligação com neuroplasticidade e efeito terapêutico é hipótese em estudo."
     },
     cen: {
         name: "⚡ Rede Fronto-Parietal de Atenção Executiva (Central Executive Network - CEN)",
@@ -95,7 +95,7 @@ const brainCircuitsData = {
     habenula: {
         name: "🦚 Habênula Lateral & Circuito Anti-Recompensa",
         desc: "• <b>Estria Medular ➔ Habênula Lateral (LHb):</b> Codifica o 'erro de previsão negativo' (ausência de recompensa esperada, punição e decepção);<br>• <b>LHb ➔ RMTg (GABA) ➔ VTA/Rafe:</b> A Habênula recruta o freio GABAérgico do RMTg, inibindo fortemente a dopamina e a serotonina.",
-        clinical: "Hiperatividade e disparos em rajada (*bursting*) na LHb sustentam a anedonia profunda e o desespero suicida na depressão; em modelos animais, a Cetamina bloqueia o *bursting* NMDA-dependente da LHb em minutos (Yang et al., 2018) — mecanismo ainda não demonstrado em humanos."
+        clinical: "Propõe-se que a hiperatividade e os disparos em rajada (*bursting*) na LHb contribuam para a anedonia e o desespero na depressão (modelo construído sobretudo em roedores); em modelos animais, a Cetamina bloqueia rapidamente o *bursting* NMDA-dependente da LHb (Yang et al., 2018) — mecanismo ainda não demonstrado em humanos."
     },
     papez: {
         name: "🌊 Circuito Límbico Clássico de Papez",
@@ -106,6 +106,14 @@ const brainCircuitsData = {
         name: "🛡️ Circuito de Medo Condicionado & Extinção (Tovote et al., 2015)",
         desc: "• <b>Aquisição & Expressão:</b> Tálamo Sensorial ➔ Amígdala Basolateral (BLA) ➔ Amígdala Central (CeA) ➔ PAG (Congelamento/Freezing) e Hipotálamo (Taquicardia).<br>• <b>Extinção Pré-Frontal:</b> Córtex Pré-Frontal Ventromedial (vmPFC) ➔ Interneurônios GABAérgicos Intercalados (ITC) ➔ Inibição ativa do disparo da CeA (Mecanismo da TCC e Dessensibilização).",
         clinical: "No TEPT e Pânico, há falha do freio inibitório vmPFC ➔ ITC, deixando o alarme da amígdala e o congelamento do PAG hiper-reativos a pistas contextuais inofensivas."
+    },
+    // v12.76 (D6, autor, 23/10/2026) — a camada 'panic' era a unica sem texto de ensino. Texto redigido a
+    // partir dos quatro itens da camada e da notaPorVia da lente de panico, revisado pelo autor. Sem
+    // `clinical` de proposito: o texto e de fisiologia/modelo, e o limite de Feinstein fica explicito.
+    panic: {
+        name: "⚡ Circuito do Pânico & Alarme de Sufocação (Klein / Stahl)",
+        desc: "• <b>CeA ➔ Locus Coeruleus:</b> no modelo de alarme, descarga noradrenérgica e hipervigilância.<br>• <b>CeA ➔ Hipotálamo (PVN):</b> disparo do eixo do estresse (CRF).<br>• <b>Bulbo (NTS) ➔ Amígdala:</b> no modelo do falso alarme de sufocação (Klein), sinais de CO₂ chegam ao sistema de ameaça.<br>• <b>Ínsula ➔ Amígdala:</b> sinais do corpo (interocepção) levados à amígdala.<br>• <b>Limite:</b> o pânico ocorre também em pessoas com lesão bilateral da amígdala; o circuito desenhado é modelo, não localização.",
+        source: ["stahl5", "klein1993", "feinstein2013"]
     },
     salience: {
         name: "🎯 Rede de Saliência (Ínsula Anterior & dACC)",
@@ -125,7 +133,7 @@ const brainCircuitsData = {
     histamine: {
         name: "🌿 Sistema Histaminérgico Central (TMN)",
         desc: "• <b>Núcleo Tuberomamilar do Hipotálamo (TMN) ➔ Todo o Neocórtex & Tálamo:</b> Promove alerta cortical e vigília sustentada via receptores H1.",
-        clinical: "O bloqueio H1 por psicofármacos (Olanzapina, Quetiapina, Mirtazapina, Amitriptilina) é a causa direta de sedação profunda, aumento de apetite e ganho ponderal."
+        clinical: "O bloqueio H1 por psicofármacos (Olanzapina, Quetiapina, Mirtazapina, Amitriptilina) contribui para sedação, aumento de apetite e ganho ponderal."
     }
 };
 
@@ -139,16 +147,136 @@ const brainCircuitsData = {
 // v12.14.0 — para que a lista de botoes NASCA da fonte e nao possa divergir dela.
 // Os seis primeiros rotulos sao do autor, resgatados literalmente do bloco morto. Os tres ultimos
 // nunca tiveram botao em lugar nenhum: os rotulos sao meus e o autor deve renomear se quiser.
+// v12.75 — o PO (autor) renomeou tres rotulos em 22/10/2026, a partir do Gate Clinico do SOPsi:
+// "Vicio" e termo estigmatizante (DSM-5: transtorno por uso de substancia) -> "Dependencia";
+// "Medo, Panico & TEPT" nomeava dois diagnosticos num ATALHO de camadas (nao e modelo de doenca) e
+// nem acendia a camada 'panic' -> "Medo, ameaca & estresse", com 'panic'; "Foco & DMN" colidia com o
+// foco por nucleo e deixava a sigla sem explicar -> "Atencao & Rede de modo padrao".
 const CIRCUIT_PRESETS = {
-    preset_reward_addiction:    { short: "🎰 Recompensa & Vício",      layers: ['dopamine', 'opioid', 'cstc', 'habenula'] },
-    preset_fear_anxiety:        { short: "🚨 Medo, Pânico & TEPT",     layers: ['fear', 'salience', 'norepinephrine', 'hpa'] },
-    preset_cognition_attention: { short: "🎯 Cognição, Foco & DMN",    layers: ['cen', 'dmn', 'cstc', 'cholinergic', 'dopamine'] },
-    preset_sleep_wake:          { short: "🌙 Sono, Vigília & Cafeína", layers: ['orexin', 'histamine', 'adenosine', 'cholinergic'] },
-    preset_pain_analgesia:      { short: "🛡️ Modulação da Dor",        layers: ['opioid', 'ecb', 'norepinephrine', 'fear'] },
+    preset_reward_addiction:    { short: "🎰 Recompensa & Dependência", layers: ['dopamine', 'opioid', 'cstc', 'habenula'] },
+    preset_fear_anxiety:        { short: "🚨 Medo, ameaça & estresse", layers: ['fear', 'panic', 'salience', 'norepinephrine', 'hpa'] },
+    preset_cognition_attention: { short: "🎯 Cognição, Atenção & Rede de modo padrão", layers: ['cen', 'dmn', 'salience', 'cstc', 'cholinergic', 'dopamine'] },   // v12.76 (D2): a saliência é o comutador DMN/CEN
+    preset_sleep_wake:          { short: "🌙 Sono & Vigília", layers: ['orexin', 'histamine', 'adenosine', 'cholinergic'] },
+    preset_pain_analgesia:      { short: "🛡️ Modulação da Dor",        layers: ['opioid', 'ecb', 'norepinephrine', 'fear', 'sensorial'] },   // v12.76 (D4): PAG ➔ RVM ➔ corno dorsal mora na Sensorial
     preset_memory:              { short: "🌊 Memória & Papez",         layers: ['papez', 'cholinergic', 'glutamate', 'serotonin'] },
     preset_monoamines:          { short: "🧪 Monoaminas",              layers: ['dopamine', 'serotonin', 'norepinephrine', 'histamine'] },
     preset_fast_transmitters:   { short: "⚡ Transmissores Rápidos",   layers: ['glutamate', 'gaba', 'cholinergic', 'adenosine'] },
     preset_modulators:          { short: "🌿 Moduladores",             layers: ['ecb', 'opioid', 'orexin'] }
+};
+
+/*
+ * v12.76 — ROTEIROS DE AULA (decisão do PO em 23/10/2026; textos revisados por ele, frase por frase, no
+ * docs/Roteiros_de_Aula_Rascunho.md v2). Cada conjunto clínico vira uma sequência guiada sobre a figura: cada passo
+ * declara as camadas ACESAS naquele passo (lista completa, não diferença), um núcleo em foco (ou null), uma via em
+ * destaque (ou null), a NATUREZA do que a frase afirma e a frase, com fonte do registro SOURCES.
+ *   natureza: 'anatomia' (a ligação existe) | 'funcao' (o que a via faz, com apoio experimental) |
+ *             'modelo' (proposta teórica — a frase diz "modelo").
+ * Só fisiologia (v1): sem lente de doença e sem fármaco nas frases. As travas estão em tests/roteiros.test.ts:
+ * ids existentes, camadas dentro do conjunto, destaque visível (camada acesa e, com foco, via que toca o foco),
+ * fonte registrada, "modelo" dito na frase, no máximo duas orações, nenhum nome de fármaco.
+ * Os roteiros são consumidos pelo SOPsi (Neurocircuitos), que os gera daqui como gera o atlas.
+ */
+const CIRCUIT_TOURS = {
+    preset_reward_addiction: {
+        passos: [
+            { camadas: ['dopamine'], foco: 'vta', destaque: null, natureza: 'anatomia', fonte: ['stahl5'],
+              frase: "A VTA (A10) é a origem das projeções dopaminérgicas mesolímbica, mesocortical e mesotalâmica deste atlas." },
+            { camadas: ['dopamine'], foco: null, destaque: 'da_mesolimbic', natureza: 'modelo', fonte: ['stahl5'],
+              frase: "No modelo, a via mesolímbica (VTA ➔ Accumbens) está associada à saliência motivacional." },
+            { camadas: ['dopamine', 'opioid'], foco: null, destaque: 'opioid_vta_accumbens', natureza: 'funcao', fonte: ['kandel6'],
+              frase: "Na VTA, receptores opioides mu sobre o freio GABAérgico desinibem a dopamina que segue ao Accumbens." },
+            { camadas: ['dopamine', 'opioid', 'habenula'], foco: 'habenula', destaque: 'lhb_rmtg', natureza: 'funcao', fonte: ['hu2020'],
+              frase: "A habênula lateral codifica o erro de previsão negativo (a recompensa esperada que não vem) e recruta o freio GABAérgico do RMTg." },
+            { camadas: ['dopamine', 'opioid', 'habenula'], foco: null, destaque: 'rmtg_vta_brake', natureza: 'funcao', fonte: ['hu2020'],
+              frase: "Do RMTg à VTA, esse freio inibe a dopamina: é o \"freio da recompensa\"." },
+            { camadas: ['dopamine', 'opioid', 'habenula', 'cstc'], foco: null, destaque: 'cstc_afetiva_in', natureza: 'anatomia', fonte: ['alexander1986'],
+              frase: "A alça afetiva liga o vmPFC/cíngulo anterior ao Accumbens e volta pelo tálamo: é uma das alças córtico-estriado-tálamo-corticais paralelas." }
+        ]
+    },
+    preset_fear_anxiety: {
+        passos: [
+            { camadas: ['fear'], foco: 'talamo', destaque: 'fear_low_road', natureza: 'modelo', fonte: ['ledoux2000'],
+              frase: "No modelo da via curta, o estímulo sensorial vai do tálamo à amígdala basolateral antes da análise cortical." },
+            { camadas: ['fear'], foco: null, destaque: 'fear_high_road', natureza: 'modelo', fonte: ['ledoux2000'],
+              frase: "No mesmo modelo, a via longa passa pelo córtex, que avalia o contexto do estímulo antes da amígdala: chega depois, com mais detalhe." },
+            { camadas: ['fear'], foco: 'amigdala', destaque: 'fear_freezing', natureza: 'funcao', fonte: ['tovote2015'],
+              frase: "Da amígdala central à substância cinzenta periaquedutal ventrolateral sai a resposta de congelamento (freezing)." },
+            { camadas: ['fear'], foco: null, destaque: 'fear_extinction', natureza: 'funcao', fonte: ['tovote2015'],
+              frase: "O vmPFC inibe a amígdala central por meio dos interneurônios intercalados (ITC): é um dos mecanismos da extinção do medo." },
+            { camadas: ['fear', 'salience'], foco: 'insula', destaque: 'salience_insula_amygdala', natureza: 'funcao', fonte: ['menon2011'],
+              frase: "A ínsula anterior integra os sinais do corpo (interocepção) e os leva à amígdala." },
+            // a via tem fonte contrária registrada (viasComFonteContraria, Feinstein 2013): por isso 'modelo', e a fonte
+            // contrária vai JUNTO do passo (v12.76.1, Gate do SOPsi + PO): Klein é o falso alarme de sufocação, não CeA ➔ LC
+            { camadas: ['fear', 'salience', 'norepinephrine', 'panic'], foco: null, destaque: 'panic_cea_lc', natureza: 'modelo', fonte: ['stahl5'],
+              contraria: { fonte: ['feinstein2013'], nota: "o pânico ocorre também em pessoas com lesão bilateral da amígdala" },
+              frase: "No modelo de alarme do medo, a amígdala central dispara o locus coeruleus e a descarga noradrenérgica." },
+            { camadas: ['fear', 'salience', 'norepinephrine', 'panic', 'hpa'], foco: 'hipotalamo', destaque: 'hpa_hippo_brake', natureza: 'funcao', fonte: ['ulrichlai2009'],
+              frase: "No eixo do estresse, o hipocampo freia o núcleo paraventricular pelo feedback de glicocorticoide, e a amígdala o acelera." }
+        ]
+    },
+    preset_cognition_attention: {
+        passos: [
+            { camadas: ['cen'], foco: 'pfc', destaque: 'cen_pfc_parietal', natureza: 'funcao', fonte: ['menon2011'],
+              frase: "A rede executiva central liga o DLPFC ao córtex parietal posterior e sustenta a atenção voluntária e a memória de trabalho." },
+            { camadas: ['cen', 'dmn'], foco: null, destaque: 'dmn_precuneus_vmpfc', natureza: 'funcao', fonte: ['menon2011'],
+              frase: "A rede em modo padrão (precúneo/cingulado posterior, vmPFC e hipocampo) fica ativa no repouso mental, na narrativa autobiográfica e na imaginação." },
+            { camadas: ['cen', 'dmn', 'salience'], foco: 'insula', destaque: 'salience_insula_pfc', natureza: 'modelo', fonte: ['menon2011'],
+              frase: "No modelo de três redes, a rede de saliência (ínsula anterior e cíngulo anterior dorsal) detecta o que importa e comuta entre a rede em modo padrão e a rede executiva." },
+            { camadas: ['cen', 'dmn', 'salience', 'cholinergic'], foco: 'meynert', destaque: 'ach_meynert_pfc', natureza: 'funcao', fonte: ['kandel6'],
+              frase: "Do núcleo basal de Meynert (Ch4), a acetilcolina chega ao neocórtex e sustenta a atenção seletiva." },
+            { camadas: ['cen', 'dmn', 'salience', 'cholinergic', 'dopamine'], foco: null, destaque: 'da_mesocortical', natureza: 'funcao', fonte: ['stahl5'],
+              frase: "A via mesocortical (VTA ➔ DLPFC) modula a função executiva." },
+            { camadas: ['cen', 'dmn', 'salience', 'cholinergic', 'dopamine', 'cstc'], foco: null, destaque: 'cstc_executiva_in', natureza: 'anatomia', fonte: ['alexander1986'],
+              frase: "Na alça executiva, o DLPFC projeta ao caudado, e a saída volta pelo tálamo ao DLPFC." }
+        ]
+    },
+    // O passo 5 (Colinérgico) entrou na v12.76.2, com frase revisada pelo PO (23/10/2026): o atlas desenha só o
+    // grupo do prosencéfalo basal (Meynert); o do tronco encefálico, central no REM, é dito como não desenhado.
+    preset_sleep_wake: {
+        passos: [
+            { camadas: ['orexin'], foco: 'orexina', destaque: 'orexin_lc', natureza: 'modelo', fonte: ['kandel6'],
+              frase: "No modelo do interruptor sono-vigília (flip-flop), a orexina do hipotálamo lateral estabiliza a vigília, com projeções ao locus coeruleus, à rafe, à VTA, ao tálamo e ao córtex." },
+            { camadas: ['orexin', 'histamine'], foco: 'tmn', destaque: 'histamine_pfc', natureza: 'funcao', fonte: ['kandel6'],
+              frase: "O núcleo tuberomamilar projeta histamina a todo o neocórtex e ao tálamo e promove o alerta cortical pelos receptores H1." },
+            { camadas: ['orexin', 'histamine', 'adenosine'], foco: null, destaque: 'adenosine_corticostriatal', natureza: 'funcao', fonte: ['kandel6'],
+              frase: "A adenosina, subproduto do ATP, acumula-se com as horas de vigília: é um dos sinais da pressão homeostática do sono." },
+            { camadas: ['orexin', 'histamine', 'adenosine'], foco: null, destaque: 'adenosine_corticostriatal', natureza: 'funcao', fonte: ['kandel6'],
+              frase: "Receptores A1 inibem o córtex; receptores A2A no estriado ativam a via indireta e induzem sonolência." },
+            { camadas: ['orexin', 'histamine', 'adenosine', 'cholinergic'], foco: 'meynert', destaque: 'ach_meynert_pfc', natureza: 'funcao', fonte: ['kandel6'],
+              frase: "Os neurônios colinérgicos do prosencéfalo basal disparam na vigília e no sono REM e quase silenciam no sono não REM, ajudando a ativar o córtex. Os do tronco encefálico (não desenhados aqui) têm papel central no REM." }
+        ]
+    },
+    preset_pain_analgesia: {
+        passos: [
+            { camadas: ['opioid'], foco: 'pag', destaque: 'opioid_pag_medulla', natureza: 'funcao', fonte: ['kandel6'],
+              frase: "Da amígdala à substância cinzenta periaquedutal (PAG): a PAG inicia a analgesia descendente, mediada por receptores opioides mu." },
+            { camadas: ['opioid'], foco: null, destaque: 'opioid_pag_medulla', natureza: 'funcao', fonte: ['kandel6'],
+              frase: "Receptores mu medeiam analgesia e euforia; receptores kappa (dinorfina), disforia e anedonia." },
+            { camadas: ['opioid', 'norepinephrine'], foco: 'a5a7', destaque: 'ne_a5a7_cord', natureza: 'funcao', fonte: ['stahl5'],
+              frase: "Dos grupos A5/A7, a noradrenalina desce à medula e inibe a transmissão da dor no corno dorsal." },
+            // sem destaque (v12.76.1): a única via eCB do atlas é hipocampo ➔ amígdala (extinção do medo), que destoava aqui
+            { camadas: ['opioid', 'norepinephrine', 'ecb'], foco: null, destaque: null, natureza: 'funcao', fonte: ['castillo2012'],
+              frase: "Os endocanabinoides são sintetizados sob demanda no neurônio pós-sináptico e agem \"para trás\", nos receptores CB1 pré-sinápticos: é a sinalização retrógrada." },
+            { camadas: ['opioid', 'norepinephrine', 'ecb', 'sensorial'], foco: 'rvm', destaque: 'sens_desc_rvm_medula', natureza: 'funcao', fonte: ['depreter2024', 'heinricher2016'],
+              frase: "Da PAG, o controle descendente passa ao bulbo rostroventromedial (RVM) e dele ao corno dorsal, onde células OFF suprimem e células ON facilitam a nocicepção: a mesma via pode aliviar ou piorar a dor." }
+        ]
+    },
+    preset_memory: {
+        passos: [
+            { camadas: ['papez'], foco: 'hipocampo', destaque: 'papez_hippo_fornix', natureza: 'anatomia', fonte: ['kandel6'],
+              frase: "O circuito de Papez sai do hipocampo pelo fórnix até os corpos mamilares." },
+            { camadas: ['papez'], foco: null, destaque: 'papez_mamilo_thalamic', natureza: 'anatomia', fonte: ['kandel6'],
+              frase: "Dos corpos mamilares, o trato mamilotalâmico segue aos núcleos anteriores do tálamo. O anel continua pelo cíngulo e pelo córtex entorrinal até o hipocampo (trecho não desenhado aqui)." },
+            { camadas: ['papez'], foco: null, destaque: null, natureza: 'funcao', fonte: ['papez1937', 'kandel6'],
+              frase: "Proposto por Papez em 1937 para a emoção, o circuito hoje é ligado sobretudo à consolidação da memória episódica." },
+            { camadas: ['papez', 'glutamate'], foco: null, destaque: 'glu_perforant_path', natureza: 'funcao', fonte: ['kandel6'],
+              frase: "Do córtex entorrinal ao giro denteado começa o circuito trissináptico do hipocampo, glutamatérgico, base da potenciação de longa duração (LTP) dependente de NMDA." },
+            { camadas: ['papez', 'glutamate', 'cholinergic'], foco: 'septo', destaque: 'ach_septo_hippo', natureza: 'funcao', fonte: ['kandel6'],
+              frase: "Do septo medial ao hipocampo, a acetilcolina modula o ritmo teta, marcado no septo sobretudo por neurônios GABAérgicos." },
+            { camadas: ['papez', 'glutamate', 'cholinergic', 'serotonin'], foco: 'rafe_m', destaque: '5ht_hippo', natureza: 'funcao', fonte: ['stahl5'],
+              frase: "Da rafe mediana ao hipocampo, a serotonina participa da contextualização da memória (receptor 5-HT1A)." }
+        ]
+    }
 };
 
 /*
@@ -169,7 +297,7 @@ const CIRCUIT_FAMILIES = {
 };
 
 // ==========================================
-// 1.9 CATÁLOGOS ÚNICOS (v12.0) — os 30 núcleos e os 71 tratos existem UMA vez; 2D e 3D derivam daqui.
+// 1.9 CATÁLOGOS ÚNICOS (v12.0) — os núcleos e os tratos existem UMA vez; 2D e 3D derivam daqui.
 //     sx/sy = fração da tela no conectoma sagital 2D; x/y/z = coordenadas do cérebro 3D. `source` = chaves de SOURCES.
 // ==========================================
 const nucleiCatalog = {
@@ -200,6 +328,9 @@ const nucleiCatalog = {
     a1a2: { id: 'a1a2', label: "Grupos A1/A2", fullName: "Bulbo Ventrolateral & Núcleo do Trato Solitário", name3d: "Grupos Bulbares A1/A2 (NTS)", color: "#3b82f6", sx: 0.53, sy: 0.74, x: 0, y: -7.0, z: -2.5, r: 0.7, bilateral: false, source: ["kandel6", "stahl5"] },
     a5a7: { id: 'a5a7', label: "Grupos A5/A7", fullName: "Ponte & Bulbo (Controle Descendente da Dor)", name3d: "Grupos Pontinos A5/A7", color: "#3b82f6", sx: 0.55, sy: 0.78, x: 1.6, y: -6.2, z: -3.5, r: 0.7, bilateral: true, source: ["kandel6", "stahl5"] },
     meynert: { id: 'meynert', label: "Meynert (NBM)", fullName: "Núcleo Basal de Meynert (Acetilcolina)", name3d: "Núcleo Basal de Meynert (Ch4)", color: "#f97316", sx: 0.38, sy: 0.50, x: 2.8, y: -2.2, z: 2.5, r: 0.75, bilateral: true, source: ["kandel6", "stahl5"] },
+    // v12.76 (D5, autor, 23/10/2026) — o septo medial/banda diagonal (Ch1-Ch2) era desenhado no nó de Meynert (Ch4):
+    // a via septo-hipocampal saía do lugar errado. Linha média (bilateral: false); 2D a >= 0,046 de qualquer vizinho.
+    septo: { id: 'septo', label: "Septo Medial", fullName: "Septo Medial & Banda Diagonal de Broca (Acetilcolina)", name3d: "Septo Medial (Ch1-Ch2)", color: "#f97316", sx: 0.39, sy: 0.455, x: 0, y: 0.4, z: 2.6, r: 0.65, bilateral: false, source: ["kandel6"] },
     orexina: { id: 'orexina', label: "Hipot-Lat (Orexina)", fullName: "Hipotálamo Lateral (Orexina / Hipocretina)", name3d: "Hipotálamo Lateral (Orexina)", color: "#facc15", sx: 0.44, sy: 0.52, x: 1.8, y: -1.4, z: 0.5, r: 0.75, bilateral: true, source: ["kandel6", "stahl5"] },
     tmn: { id: 'tmn', label: "TMN (Histamina)", fullName: "Núcleo Tuberomamilar (Histamina H1)", name3d: "Núcleo Tuberomamilar (TMN)", color: "#e11d48", sx: 0.45, sy: 0.58, x: 0, y: -2.2, z: 0.0, r: 0.75, bilateral: false, source: ["kandel6", "stahl5"] },
     medula: { id: 'medula', label: "Corno Dorsal Medula", fullName: "Medula Espinhal (Vias Ascendentes/Descendentes)", name3d: "Corno Dorsal da Medula Espinhal", color: "#38bdf8", sx: 0.56, sy: 0.86, x: 0, y: -9.5, z: -3.8, r: 0.9, bilateral: false, source: ["kandel6", "stahl5"] },
@@ -265,13 +396,13 @@ const tractsCatalog = [
     { layer: 'gaba', subId: 'gaba_sst_dendritic', from: 'pfc', to: 'ctx_post', color: '#22c55e', label: 'GABA 2: Interneurônios SST+ (Inibição Dendrítica)', arcY: 5.0, arcX: 0, source: ["kandel6"] },
     { layer: 'gaba', subId: 'gaba_striato_pallidal', short: "Estriatonigral/-palidal", from: 'estriado', to: 'snc', color: '#22c55e', label: 'GABA 3: Estriatonigral / Estriatopalidal', arcY: 1.0, arcX: 0, source: ["kandel6"] },
     { layer: 'cholinergic', subId: 'ach_meynert_pfc', from: 'meynert', to: 'pfc', color: '#0284c7', label: 'ACh 1: Meynert Ch4 ➔ Neocórtex (Atenção)', arcY: 2.5, arcX: -1.0, source: ["kandel6"] },
-    { layer: 'cholinergic', subId: 'ach_septo_hippo', from: 'meynert', to: 'hipocampo', color: '#0284c7', label: 'ACh 2: Septohipocampal (Ritmo Teta 4-8 Hz)', arcY: 0.5, arcX: 1.0, source: ["kandel6"] },
+    { layer: 'cholinergic', subId: 'ach_septo_hippo', from: 'septo', to: 'hipocampo', color: '#0284c7', label: 'ACh 2: Septohipocampal (Ritmo Teta)', arcY: 0.5, arcX: 1.0, source: ["kandel6"] },
     { layer: 'habenula', subId: 'lhb_rmtg', from: 'habenula', to: 'rmtg', color: '#7c3aed', label: 'Habênula 1: LHb ➔ RMTg (GABA)', arcY: -1.0, arcX: 0, source: ["hu2020"] },
     { layer: 'habenula', subId: 'rmtg_vta_brake', from: 'rmtg', to: 'vta', color: '#7c3aed', label: 'Habênula 2: RMTg ➔ VTA (Freio da Recompensa)', arcY: -0.5, arcX: 0, source: ["hu2020"] },
     { layer: 'habenula', subId: 'rmtg_rafe_brake', from: 'rmtg', to: 'rafe_d', color: '#7c3aed', label: 'Habênula 3: RMTg ➔ Rafe (Freio da Serotonina)', arcY: -0.8, arcX: 0, source: ["hu2020"] },
     { layer: 'hpa', subId: 'hpa_pvn_pituitary', short: "PVN ➔ Adeno-hipófise", from: 'hipotalamo', to: 'hipofise', color: '#dc2626', label: 'HPA 1: Hipotálamo PVN ➔ Adeno-hipófise (CRF/ACTH)', arcY: -1.5, arcX: 0, source: ["ulrichlai2009"] },
     { layer: 'hpa', subId: 'hpa_hippo_brake', from: 'hipocampo', to: 'hipotalamo', color: '#dc2626', label: 'HPA 2: Hipocampo ➔ PVN (Feedback Negativo)', arcY: 0.5, arcX: -1.5, source: ["ulrichlai2009"] },
-    { layer: 'dmn', subId: 'dmn_precuneus_vmpfc', from: 'ctx_post', to: 'vmpfc', color: '#ec4899', label: 'DMN 1: Precúneo/PCC ➔ vmPFC (Ruminação)', arcY: 4.5, arcX: 0, source: ["menon2011"] },
+    { layer: 'dmn', subId: 'dmn_precuneus_vmpfc', from: 'ctx_post', to: 'vmpfc', color: '#ec4899', label: 'DMN 1: Precúneo/PCC ➔ vmPFC', arcY: 4.5, arcX: 0, source: ["menon2011"] },
     { layer: 'dmn', subId: 'dmn_vmpfc_hippo', from: 'vmpfc', to: 'hipocampo', color: '#ec4899', label: 'DMN 2: vmPFC ➔ Hipocampo (Memória Autobiográfica)', arcY: 1.0, arcX: 1.5, source: ["menon2011"] },
     { layer: 'cen', subId: 'cen_pfc_parietal', short: "DLPFC ➔ Parietal", from: 'pfc', to: 'ctx_post', color: '#06b6d4', label: 'CEN 1: DLPFC ➔ Parietal Posterior (Atenção Executiva)', arcY: 5.9, arcX: 0, source: ["menon2011"] },
     { layer: 'cen', subId: 'cen_parietal_pfc', from: 'ctx_post', to: 'pfc', color: '#06b6d4', label: 'CEN 2: Parietal ➔ DLPFC (Controle Focado)', arcY: 5.5, arcX: 0, source: ["menon2011"] },
@@ -1141,15 +1272,25 @@ const pathologyProfilesData = {
     bipolar_mania: {
         vias: {
             da_mesolimbic: 'hiper', da_mesocortical: 'hiper', cstc_afetiva_in: 'hiper',
-            cstc_saida_ventral: 'hiper', cstc_afetiva_out: 'hiper', fear_extinction: 'hipo'
+            cstc_saida_ventral: 'hiper', cstc_afetiva_out: 'hiper'
         },
         short: "🔥 Mania Bipolar",
-        camadas: ['dopamine', 'cstc', 'salience', 'fear'], tom: [580, 'triangle', 0.22, 0.25],   // v12.41 (D11, autor, 03/09/2026): 'fear' entra — fear_extinction desviava em camada apagada
-        name: "🔥 Transtorno Bipolar - Mania Aguda",
+        camadas: ['dopamine', 'cstc', 'salience'], tom: [580, 'triangle', 0.22, 0.25],   // v12.41 (D11): 'fear' entrou pela fear_extinction; v12.71 (PO, 21/10/2026): a via saiu (sem sustentação) e a camada com ela
+        name: "🔥 Mania Bipolar Aguda (modelo: hiperdopaminergia de recompensa)",
         circuitStatus: "🟣 Hiperatividade Dopaminérgica Mesolímbica/Mesocortical + 🔄 Aceleração do Loop Afetivo CSTC + ⚡ Hiperativação PKC.",
         fisiopatologia: "• <b>Grandiosidade, Fuga de Ideias & Insônia:</b> Hiperativação difusa dos circuitos de dopamina e noradrenalina, com perda do freio inibitório pré-frontal ventromedial sobre a amígdala.<br>• <b>Instabilidade de Membrana:</b> Influxo excessivo de Cálcio via canais Cav1.2, ativando a cascata intracelular da Proteína Quinase C (PKC) e GSK-3β.",
         bioquimica: "Hiperestimulação Gs/Golf e desregulação mitocondrial com estresse oxidativo neuronal.",
-        terapeutica: "<b>Lítio</b> (inibe GSK-3β e depleta inositol), <b>Valproato de Sódio</b> (inibe PKC e eleva GABA — <b>contraindicado em mulheres com potencial reprodutivo</b> sem programa de prevenção de gravidez) e <b>Antipsicóticos Antimaniacos</b> (bloqueio rápido de D2)."
+        terapeutica: "<b>Lítio</b> (inibe GSK-3β e depleta inositol), <b>Valproato de Sódio</b> (inibe PKC e eleva GABA — <b>contraindicado em mulheres com potencial reprodutivo</b> sem programa de prevenção de gravidez) e <b>Antipsicóticos Antimaniacos</b> (bloqueio rápido de D2).",
+        // v12.71 (PO, 21/10/2026, melhoria 2 da Neurocircuitos): fonte por perfil e EVIDÊNCIA POR VIA —
+        // busca não sistemática no PubMed (PMID conferido); 'parcial' = apoio indireto ou controverso;
+        // vias sem sustentação encontrada saíram do desenho e ficam ditas em viasSemSustentacao.
+        source: ["ashok2017", "phillips2014", "yatham2002", "nikolaus2019", "nusslock2012", "yip2015", "schreiter2016", "strakowski2012", "foland2008"],
+        evidenciaPorVia: {"da_mesolimbic": "parcial", "da_mesocortical": "parcial", "cstc_afetiva_in": "parcial", "cstc_saida_ventral": "parcial", "cstc_afetiva_out": "parcial"},
+        // v12.72 (Gate Clínico do SOPsi, 21/10/2026): a nota de cada via (o que a fonte mostra e o que é
+        // inferência) e as vias em que há fonte na direção OPOSTA — "parcial" sozinho escondia isso.
+        notaPorVia: {"da_mesolimbic": "Hiperdopaminergia/rede de recompensa hiperativa apoiada sobretudo por farmacologia; F-DOPA estriatal não aumentada na mania sem tratamento.", "da_mesocortical": "Única menção: compilação PET/SPECT com mania n=15 somados; evidência muito fina.", "cstc_afetiva_in": "Estriado ventral/OFC ↑ em alguns estudos (eutímicos), ↓ em outros; quase nada em mania aguda.", "cstc_saida_ventral": "Nada separa entrada de saída da alça.", "cstc_afetiva_out": "Consenso fala em menor conectividade PFC ventral–límbica, não alça hiperativa."},
+        viasComFonteContraria: ["cstc_afetiva_in"],
+        viasSemSustentacao: [{"via": "fear_extinction", "direcao": "hipo", "nota": "Nenhum estudo de extinção do medo na mania; há apoio para menor modulação vlPFC→amígdala (outro construto)."}],
     },
     panic_disorder: {
         vias: {
@@ -1158,11 +1299,21 @@ const pathologyProfilesData = {
         },
         short: "⚠️ Ansiedade & Pânico",
         camadas: ['norepinephrine', 'salience', 'hpa', 'panic'], tom: [620, 'sawtooth', 0.22, 0.25],   // v12.41 (D11, autor, 03/09/2026): 'panic' entra — tres vias panic_* desviavam em camada apagada
-        name: "🚨 Transtorno de Pânico & Ansiedade Aguda",
+        name: "🚨 Transtorno de Pânico (modelo: rede do medo e interocepção)",
         circuitStatus: "🔵 Hiperativação em Salva do Locus Coeruleus (A6) + 🎯 Hiperconectividade da Ínsula + 🔴 Alarme Amigdalar.",
         fisiopatologia: "• <b>Ataques de Pânico & Sensação de Morte:</b> O Locus Coeruleus descarrega noradrenalina maciça na Amígdala (receptores β1 e α1) e no Hipotálamo PVN, disparando taquicardia, sudorese e dispneia.<br>• <b>Hiper-Reatividade Interoceptiva:</b> A Ínsula Anterior amplifica os sinais viscerais e o córtex pré-frontal os interpreta como catástrofe iminente.",
         bioquimica: "Esgotamento da inibição GABAérgica amigdalar e falha de autorreceptores inibitórios α2.",
-        terapeutica: "<b>ISRSs iniciados em dose baixa e titulados lentamente</b> (Sertralina 25mg, Fluoxetina 10mg — 'start low, go slow' evita a piora ansiosa inicial), <b>Benzodiazepínicos por tempo limitado</b> (modulação alostérica positiva GABAA) e <b>TCC</b>. Beta-bloqueadores (Propranolol) ajudam apenas na ansiedade de desempenho, sem eficácia no Transtorno de Pânico."
+        terapeutica: "<b>ISRSs iniciados em dose baixa e titulados lentamente</b> (Sertralina 25mg, Fluoxetina 10mg — 'start low, go slow' evita a piora ansiosa inicial), <b>Benzodiazepínicos por tempo limitado</b> (modulação alostérica positiva GABAA) e <b>TCC</b>. Beta-bloqueadores (Propranolol) ajudam apenas na ansiedade de desempenho, sem eficácia no Transtorno de Pânico.",
+        // v12.71 (PO, 21/10/2026, melhoria 2 da Neurocircuitos): fonte por perfil e EVIDÊNCIA POR VIA —
+        // busca não sistemática no PubMed (PMID conferido); 'parcial' = apoio indireto ou controverso;
+        // vias sem sustentação encontrada saíram do desenho e ficam ditas em viasSemSustentacao.
+        source: ["charney1984", "mccall2017", "gorman2000", "vanbockstaele1998", "feinstein2013", "ledoux1988", "paulus2006", "mehrtabar2026", "etkin2007", "sylvester2012"],
+        evidenciaPorVia: {"ne_amygdala": "parcial", "panic_cea_lc": "parcial", "panic_cea_hypothalamus": "parcial", "panic_insula_amygdala": "parcial", "salience_insula_pfc": "parcial"},
+        // v12.72 (Gate Clínico do SOPsi, 21/10/2026): a nota de cada via (o que a fonte mostra e o que é
+        // inferência) e as vias em que há fonte na direção OPOSTA — "parcial" sozinho escondia isso.
+        notaPorVia: {"ne_amygdala": "Hiper-reatividade noradrenérgica humana (sistêmica); projeção LC→BLA ansiogênica só em camundongo.", "panic_cea_lc": "Substrato anatômico em rato + hipótese; pânico ocorre sem amígdala (Feinstein).", "panic_cea_hypothalamus": "CeA→hipotálamo lateral medeia resposta autonômica condicionada em rato; transposição ao pânico por analogia.", "panic_insula_amygdala": "Hiperatividade regional de ínsula e amígdala; projeção não medida; Etkin não inclui pânico.", "salience_insula_pfc": "Modelo de redes para ansiedade em geral (cíngulo-opercular/atenção ventral ↑)."},
+        viasComFonteContraria: ["panic_cea_lc", "panic_cea_hypothalamus"],
+        viasSemSustentacao: [],
     },
     ptsd: {
         vias: {
@@ -1171,11 +1322,21 @@ const pathologyProfilesData = {
         },
         short: "🛡️ TEPT",
         camadas: ['fear', 'panic', 'norepinephrine', 'ecb'], tom: [400, 'sine', 0.12, 0.10],   // v12.35: as camadas das proprias vias desviadas; nao tinha ramo (caia no panorama basal); sem `sistema`, como antes
-        name: "🛡️ TEPT (Falha de Extinção & Hiper-Reatividade Amígdala/PAG)",
+        name: "🛡️ TEPT (modelo: falha de extinção e alarme hiper-reativo)",
         circuitStatus: "🔴 Hiperatividade Amígdala ➔ PAG/Hipotálamo + 🟢 Falha do Freio de Extinção vmPFC ➔ ITC + 🔵 Descarga LC.",
         fisiopatologia: "• <b>Flashbacks & Hipervigilância:</b> O vmPFC perde a capacidade de ativar os neurônios GABAérgicos intercalados (ITC) da amígdala. Sem esse freio, memórias traumáticas hipocampais disparam diretamente a Amígdala Central (CeA), acionando o congelamento no PAG e taquicardia hipotalâmica.<br>• <b>Pesadelos & Sobressalto:</b> O Locus Coeruleus descarrega noradrenalina em excesso em receptores α1 centrais.",
         bioquimica: "Tônus noradrenérgico hiperativo e falha da plasticidade dependente de NMDA/endocanabinoides (CB1) para extinção.",
-        terapeutica: "<b>Prazosina</b> (antagonista α1 para pesadelos — evidência conflitante após o ensaio negativo do VA, 2018), <b>ISRSs</b> (Sertralina/Paroxetina aprovados), <b>TCC com Exposição Prolongada</b> (reativação do freio vmPFC ➔ ITC) e <b>Canabidiol / Moduladores CB1</b> em investigação."
+        terapeutica: "<b>Prazosina</b> (antagonista α1 para pesadelos — evidência conflitante após o ensaio negativo do VA, 2018), <b>ISRSs</b> (Sertralina/Paroxetina aprovados), <b>TCC com Exposição Prolongada</b> (reativação do freio vmPFC ➔ ITC) e <b>Canabidiol / Moduladores CB1</b> em investigação.",
+        // v12.71 (PO, 21/10/2026, melhoria 2 da Neurocircuitos): fonte por perfil e EVIDÊNCIA POR VIA —
+        // busca não sistemática no PubMed (PMID conferido); 'parcial' = apoio indireto ou controverso;
+        // vias sem sustentação encontrada saíram do desenho e ficam ditas em viasSemSustentacao.
+        source: ["milad2009", "etkin2007", "duits2015", "harricharan2016", "nicholson2017", "ledoux1988", "bremner1997", "meewisse2007", "neumeister2013", "geracioti2001", "naegeli2018", "hill2013", "gowatch2024"],
+        evidenciaPorVia: {"fear_extinction": "sustentada", "fear_freezing": "parcial", "panic_cea_hypothalamus": "parcial", "ne_amygdala": "parcial", "ecb_hippo_amygdala": "parcial"},
+        // v12.72 (Gate Clínico do SOPsi, 21/10/2026): a nota de cada via (o que a fonte mostra e o que é
+        // inferência) e as vias em que há fonte na direção OPOSTA — "parcial" sozinho escondia isso.
+        notaPorVia: {"fear_extinction": "Recordação de extinção prejudicada; vmPFC/hipocampo hipoativos.", "fear_freezing": "PAG envolvida; defesa passiva e fluxo amígdala→PAG predominam no subtipo dissociativo; TEPT clássico tem fluxo PAG→amígdala.", "panic_cea_hypothalamus": "CRF no líquor ↑, mas cortisol basal não difere no geral (meta) ou é mais baixo.", "ne_amygdala": "NE no líquor ↑ e LC hiper-responsivo; especificidade para a amígdala é inferência.", "ecb_hippo_amygdala": "AEA ou 2-AG ↓ em estudos isolados; meta-análise mostra eCB basal ↑ em transtornos ligados ao estresse; nenhuma medida regional."},
+        viasComFonteContraria: ["ecb_hippo_amygdala"],
+        viasSemSustentacao: [],
     },
     adhd: {
         vias: {
@@ -1183,25 +1344,45 @@ const pathologyProfilesData = {
         },
         short: "🎯 TDAH",
         camadas: ['norepinephrine', 'dopamine', 'cstc'], tom: [480, 'sine', 0.18, 0.20],
-        name: "🎯 TDAH (Desregulação Catecolaminérgica Pré-Frontal)",
+        name: "🎯 TDAH (modelo: hipótese catecolaminérgica pré-frontal)",
         circuitStatus: "🔵 Déficit de Noradrenalina LC ➔ DLPFC + 🟣 Déficit de Dopamina VTA ➔ DLPFC (Curva Yerkes-Dodson).",
         fisiopatologia: "• <b>Desatenção & Distraibilidade:</b> No DLPFC, a falta de Noradrenalina deixa os canais de potássio HCN abertos nas espinhas dendríticas, causando 'vazamento' de corrente elétrica e ruído mental.<br>• <b>Impulsividade & Desmotivação:</b> A falta de Dopamina em receptores D1 enfraquece a sustentação do sinal de foco e recompensa atrasada.",
         bioquimica: "Transmissão tônica subótima de catecolaminas no córtex pré-frontal.",
-        terapeutica: "<b>Psicoestimulantes</b> (Metilfenidato, Lisdexanfetamina bloqueando DAT/NET) e <b>Guanfacina</b> (agonista α2A que fecha canais HCN e blinda o sinal de foco no DLPFC)."
+        terapeutica: "<b>Psicoestimulantes</b> (Metilfenidato, Lisdexanfetamina bloqueando DAT/NET) e <b>Guanfacina</b> (agonista α2A que fecha canais HCN e blinda o sinal de foco no DLPFC).",
+        // v12.71 (PO, 21/10/2026, melhoria 2 da Neurocircuitos): fonte por perfil e EVIDÊNCIA POR VIA —
+        // busca não sistemática no PubMed (PMID conferido); 'parcial' = apoio indireto ou controverso;
+        // vias sem sustentação encontrada saíram do desenho e ficam ditas em viasSemSustentacao.
+        source: ["arnstenpliszka2011", "delcampo2011", "ulke2019", "ernst1998", "volkow2009", "gonon2009"],
+        evidenciaPorVia: {"ne_pfc": "parcial", "da_mesocortical": "parcial"},
+        // v12.72 (Gate Clínico do SOPsi, 21/10/2026): a nota de cada via (o que a fonte mostra e o que é
+        // inferência) e as vias em que há fonte na direção OPOSTA — "parcial" sozinho escondia isso.
+        notaPorVia: {"ne_pfc": "PFC subativo + farmacologia (base animal); NET ↓ em adultos (n=20) não equivale a NE ↓.", "da_mesocortical": "F-DOPA pré-frontal ↓ (n=17); achados de Volkow são mesolímbicos; hipótese de déficit DA criticada."},
+        viasComFonteContraria: ["da_mesocortical"],
+        viasSemSustentacao: [],
     },
     ocd: {
         vias: {
             cstc_executiva_in: 'hiper', cstc_executiva_out: 'hiper', cstc_motora_in: 'hiper',
-            cstc_motora_out: 'hiper', cstc_saida_dorsal: 'hiper', '5ht_striatum': 'hipo',
+            cstc_motora_out: 'hiper', cstc_saida_dorsal: 'hiper',
             glu_cortico_striatal: 'hiper'
         },
         short: "🧩 TOC",
-        camadas: ['cstc', 'serotonin', 'glutamate'], tom: [520, 'triangle', 0.20, 0.22],
-        name: "🧩 Transtorno Obsessivo-Compulsivo (TOC)",
+        camadas: ['cstc', 'glutamate'], tom: [520, 'triangle', 0.20, 0.22],
+        name: "🧩 TOC (modelo: alças córtico-estriatais)",
         circuitStatus: "🔄 Hiper-Ressonância em Loop Fechado do Circuito Cortico-Estriato-Talamo-Cortical (CSTC).",
         fisiopatologia: "• <b>Obsessões & Rituais Compulsivos:</b> Hiperconectividade excitatória contínua entre Córtex Orbitofrontal (OFC), Córtex Cingulado Anterior (ACC), Cabeça do Caudato e Tálamo.<br>• <b>Falha do Freio Serotoninérgico:</b> Perda do controle inibitório da Rafe Dorsal sobre o estriado dorsal, travando o cérebro na sensação de que 'algo está incompleto ou perigoso'.",
         bioquimica: "Excesso de sinalização glutamatérgica corticoestriatal e dessensibilização heterogênea de 5-HT1B/1D.",
-        terapeutica: "<b>ISRSs em Doses Altas</b> (Fluoxetina até 80mg, Sertralina até 200mg, Escitalopram até 20mg — dose máxima de bula), <b>Clomipramina</b>, <b>EMT profunda 20 Hz em mPFC/ACC</b> (protocolo aprovado pelo FDA para TOC) ou <b>DBS no ALIC</b>."
+        terapeutica: "<b>ISRSs em Doses Altas</b> (Fluoxetina até 80mg, Sertralina até 200mg, Escitalopram até 20mg — dose máxima de bula), <b>Clomipramina</b>, <b>EMT profunda 20 Hz em mPFC/ACC</b> (protocolo aprovado pelo FDA para TOC) ou <b>DBS no ALIC</b>.",
+        // v12.71 (PO, 21/10/2026, melhoria 2 da Neurocircuitos): fonte por perfil e EVIDÊNCIA POR VIA —
+        // busca não sistemática no PubMed (PMID conferido); 'parcial' = apoio indireto ou controverso;
+        // vias sem sustentação encontrada saíram do desenho e ficam ditas em viasSemSustentacao.
+        source: ["norman2019", "shephard2021", "whiteside2004", "miladrauch2012", "ahmari2013", "reimold2007", "simpson2003", "spies2015", "chakrabarty2005", "pittenger2011", "simpson2012"],
+        evidenciaPorVia: {"cstc_executiva_in": "parcial", "cstc_executiva_out": "parcial", "cstc_motora_in": "parcial", "cstc_motora_out": "parcial", "cstc_saida_dorsal": "parcial", "glu_cortico_striatal": "parcial"},
+        // v12.72 (Gate Clínico do SOPsi, 21/10/2026): a nota de cada via (o que a fonte mostra e o que é
+        // inferência) e as vias em que há fonte na direção OPOSTA — "parcial" sozinho escondia isso.
+        notaPorVia: {"cstc_executiva_in": "Hiper no processamento de erro, hipo no controle inibitório (depende da tarefa).", "cstc_executiva_out": "Como na entrada: depende da tarefa; caudado/tálamo hipoativos no controle inibitório.", "cstc_motora_in": "SMA/pré-SMA hiperativas no processamento de erro; circuito sensório-motor só no modelo heurístico.", "cstc_motora_out": "Como na entrada: SMA/pré-SMA hiperativas no processamento de erro; o circuito sensório-motor só aparece no modelo heurístico.", "cstc_saida_dorsal": "Diferenças consistentes em OFC e cabeça do caudado; modelo animal causal usa estriado ventromedial.", "glu_cortico_striatal": "Glutamato no líquor ↑; MRS de PFC medial sem diferença de Glx; causalidade córtico-estriatal só em camundongo."},
+        viasComFonteContraria: ["glu_cortico_striatal"],
+        viasSemSustentacao: [{"via": "5ht_striatum", "direcao": "hipo", "nota": "SERT ↓ no tálamo/mesencéfalo, não no estriado; estudo com estriado medido sem diferença."}],
     }
 };
 
@@ -1255,11 +1436,12 @@ const DIMENSOES_DE_SINTOMA = {
     // simulacao: cada uma tem fonte na biblioteca dele (levantamento em docs/Fontes_no_Drive_2026-09-03.md).
     positivos: {
         rotulo: 'Sintomas positivos',
-        descricao: 'A dopamina mesolímbica em excesso transforma estímulo neutro em estímulo saliente — a saliência '
-            + 'aberrante de Kapur; o delírio é o sentido que a pessoa dá a essa experiência. O excesso não nasce no VTA: '
-            + 'vem de cima. O hipocampo ventral hiperativo empurra a atividade populacional dos neurônios dopaminérgicos, '
-            + 'o córtex perde o freio sobre o VTA, o portão córtico-talâmico deixa de fechar e os interneurônios PV+ que '
-            + 'sustentam o ritmo gama estão em falta.',
+        descricao: 'Na hipótese de Kapur, a dopamina mesolímbica em excesso transforma estímulo neutro em estímulo saliente '
+            + '— a saliência aberrante; o delírio seria o sentido que a pessoa dá a essa experiência. No modelo animal '
+            + 'de Lodge e Grace, o excesso não nasce no VTA: vem de cima — o hipocampo ventral hiperativo aumenta a '
+            + 'atividade populacional dos neurônios dopaminérgicos. O modelo integrado acrescenta o córtex que perde o '
+            + 'freio sobre o VTA, o portão córtico-talâmico que deixa de fechar e o déficit dos interneurônios PV+ que '
+            + 'sustentam o ritmo gama.',
         vias: {
             da_mesolimbic: 'hiper',        // a via final comum da psicose
             glu_vhipp_mpfc: 'hiper',       // o empurrao que vem do hipocampo ventral
@@ -1272,11 +1454,11 @@ const DIMENSOES_DE_SINTOMA = {
     },
     negativos: {
         rotulo: 'Sintomas negativos',
-        descricao: 'A mesma doença pelo eixo oposto: a via mesocortical hipoativa deixa o pré-frontal dorsolateral sem '
-            + 'dopamina, e é disso que se fazem avolição, embotamento afetivo e anedonia — o que a SANS operacionaliza. '
-            + 'O déficit de interneurônios PV+ entra aqui também: sem ritmo gama, o córtex perde desempenho de circuito. '
-            + 'Por isso o antipsicótico que resolve o positivo não resolve o negativo — bloquear D2 não repõe dopamina '
-            + 'onde ela falta.',
+        descricao: 'No modelo dopaminérgico, a mesma doença aparece pelo eixo oposto: a via mesocortical hipoativa deixaria '
+            + 'o pré-frontal dorsolateral sem dopamina — a base proposta para avolição, embotamento afetivo e '
+            + 'anedonia, o que a SANS operacionaliza. Modelos animais acrescentam o déficit de interneurônios PV+: sem '
+            + 'ritmo gama, o córtex perde desempenho de circuito. No modelo, bloquear D2 não repõe dopamina onde ela '
+            + 'falta.',
         vias: {
             da_mesocortical: 'hipo',       // hipofrontalidade
             gaba_pv_gamma: 'hipo',         // compartilhada com os positivos, no MESMO sentido: soma, nao contradiz
@@ -1292,11 +1474,11 @@ const DIMENSOES_DE_SINTOMA = {
      */
     anedonia: {
         rotulo: 'Anedonia',
-        descricao: 'A habênula lateral dispara em rajada e recruta o freio GABAérgico do RMTg sobre o VTA: a '
-            + 'dopamina mesolímbica cai, e com ela a resposta à recompensa e a disposição de gastar esforço para '
-            + 'obtê-la. É por isso que a anedonia se mede em duas peças — o prazer de consumar e a vontade de '
-            + 'buscar — e por que a cetamina, que silencia a rajada da LHb, alivia em horas o que a monoamina '
-            + 'demora semanas para tocar.',
+        descricao: 'No modelo da habênula, construído sobretudo em roedores, a habênula lateral dispara em rajada e recruta '
+            + 'o freio GABAérgico do RMTg sobre o VTA: a dopamina mesolímbica cai, e com ela a resposta à recompensa e '
+            + 'a disposição de gastar esforço para obtê-la. A anedonia se mede em duas peças — o prazer de consumar e '
+            + 'a vontade de buscar. É também uma das hipóteses para o efeito antidepressivo rápido da cetamina: em '
+            + 'modelos animais, ela silencia rapidamente a rajada da LHb — mecanismo ainda não demonstrado em humanos.',
         vias: {
             lhb_rmtg: 'hiper',        // a habenula em rajada
             rmtg_vta_brake: 'hiper',  // o freio que ela recruta
@@ -1306,10 +1488,10 @@ const DIMENSOES_DE_SINTOMA = {
     },
     humor_deprimido: {
         rotulo: 'Humor deprimido',
-        descricao: 'O mesmo freio do RMTg alcança a rafe, e o tônus serotoninérgico que chega ao córtex pré-frontal '
-            + 'cai. É o eixo em que o antidepressivo monoaminérgico age — e a demora de semanas até a '
-            + 'dessensibilização do autorreceptor 5-HT1A é a razão de a melhora do humor não vir junto com o '
-            + 'primeiro comprimido.',
+        descricao: 'No mesmo modelo, o freio do RMTg alcançaria a rafe, e o tônus serotoninérgico que chega ao córtex '
+            + 'pré-frontal cairia — hipótese do modelo, não medida no paciente. É o eixo sobre o qual se propõe que o '
+            + 'antidepressivo monoaminérgico atue; a dessensibilização do autorreceptor 5-HT1A, que leva semanas, é '
+            + 'uma das hipóteses para a melhora do humor não vir junto com o primeiro comprimido.',
         vias: {
             rmtg_rafe_brake: 'hiper',  // o freio sobre a rafe
             '5ht_pfc': 'hipo',         // o tonus que chega ao cortex
@@ -1320,10 +1502,10 @@ const DIMENSOES_DE_SINTOMA = {
     },
     eixo_do_estresse: {
         rotulo: 'Desregulação do eixo do estresse',
-        descricao: 'O PVN mantém a alça HPA acesa e o freio hipocampal por glicocorticoide, que deveria desligá-la, '
-            + 'está fraco: o cortisol não volta ao basal. É a dimensão que responde pelo despertar precoce e pela '
-            + 'não supressão à dexametasona, e a que liga a depressão melancólica ao estresse crônico — e não uma '
-            + 'segunda doença.',
+        descricao: 'No modelo do estresse, o PVN mantém a alça HPA acesa e o freio hipocampal por glicocorticoide, que '
+            + 'deveria desligá-la, está fraco: o cortisol não volta ao basal. É a dimensão associada ao despertar '
+            + 'precoce e à não supressão à dexametasona, e a que o modelo usa para ligar a depressão melancólica ao '
+            + 'estresse crônico.',
         vias: {
             hpa_pvn_pituitary: 'hiper',  // a alca acesa
             hpa_hippo_brake: 'hipo',     // o freio que nao desliga
@@ -1444,6 +1626,16 @@ const neurostimProtocolsData = {
  *
  * Determinismo: mesma entrada, mesma saida, sempre (sem Math.random, sem ordem de Set). Duas
  * chamadas identicas por quadro produzem o mesmo desenho — e isso e testado.
+ *
+ * v12.67 — A CAIXA E O TEXTO. A vaga da calha espreme a CAIXA na largura da faixa
+ * (`larg = Math.min(w, calhaLargura - 8)`), e ate aqui o TEXTO nao era espremido junto: o nome
+ * saia da caixa e crescia para dentro do mapa. No porte do SOPsi (viewBox 1000x620, 9,4 px por
+ * glifo) eram oito nucleos, o pior "Hipot-Lat (Orexina)" com +43 px. Agora todo item colocado sai
+ * com `rotulo` — o que se DESENHA — e, quando a caixa e mais estreita que o nome medido, o rotulo
+ * e o nome cortado com reticencias ate caber (medido com a MESMA funcao injetada). `texto` segue
+ * sendo o nome inteiro, sempre: quem desenha o poe no tooltip (title no canvas, <title> no SVG).
+ * Por que truncar e nao alargar a calha: a faixa ja vai ate a borda do cerebro (que comeca em
+ * ~0,15-0,18 da largura); alargar e exatamente invadir o desenho, que e o defeito.
  */
 function posicionarRotulos(spec) {
     const W = spec.largura, H = spec.altura;
@@ -1477,6 +1669,21 @@ function posicionarRotulos(spec) {
         { x1: ax + afast * 0.75, y1: ay + afast * 0.75, w, h },
         { x1: ax - afast * 0.75 - w, y1: ay + afast * 0.75, w, h },
     ].map(arred);
+
+    // v12.67: o texto que cabe na caixa. Corta por caractere (Array.from: nao parte par substituto) ate o nome com
+    // reticencias caber na largura medida; se nem a primeira letra cabe, sobra so a reticencia — nunca texto maior
+    // que a caixa. O nome inteiro continua em `texto`, para o tooltip.
+    const RETICENCIAS = '\u2026';
+    const caberNaCaixa = (texto, tipo, larg) => {
+        if (medir(texto, tipo).w <= larg) return texto;
+        const letras = Array.from(String(texto));
+        for (let k = letras.length - 1; k > 0; k--) {
+            const t = letras.slice(0, k).join('').replace(/\s+$/, '') + RETICENCIAS;
+            if (medir(t, tipo).w <= larg) return t;
+        }
+        return RETICENCIAS;
+    };
+    const rotuloNaCaixa = (texto, tipo, caixa, m) => (caixa.x2 - caixa.x1 < m.w ? caberNaCaixa(texto, tipo, caixa.x2 - caixa.x1) : texto);
 
     const pilhas = { esq: [], dir: [] };
     const vagaNaCalha = (lado, ancora, w, h, bloqueios) => {
@@ -1513,7 +1720,9 @@ function posicionarRotulos(spec) {
         if (!caixa) { const cc = naCalha(n, m.w, m.h, caixasNucleos); if (cc) { caixa = cc; modo = 'calha'; de = { x: n.x, y: n.y }; } }
         if (!caixa) { caixa = cands[0]; modo = 'forcado'; }   // nunca some: o pior caso e sobrepor, e isso e contado
         caixasNucleos.push(caixa);
-        const saida = { id: n.id, tipo: 'nucleo', texto: n.texto, modo, de, visivel: !!n.aceso, x1: caixa.x1, y1: caixa.y1, x2: caixa.x2, y2: caixa.y2, candidato: caixa.candidato };
+        // v12.67: `rotulo` e o que se desenha (cabe na caixa); `texto`, o nome inteiro (tooltip)
+        const rotulo = rotuloNaCaixa(n.texto, 'nucleo', caixa, m);
+        const saida = { id: n.id, tipo: 'nucleo', texto: n.texto, rotulo, truncado: rotulo !== n.texto, modo, de, visivel: !!n.aceso, x1: caixa.x1, y1: caixa.y1, x2: caixa.x2, y2: caixa.y2, candidato: caixa.candidato };
         if (debug) saida.candidatos = cands;
         return saida;
     });
@@ -1525,15 +1734,17 @@ function posicionarRotulos(spec) {
     const outVias = vias.map((v, idx) => {
         const numero = idx + 1;
         if (regime === 'legenda') return { id: v.id, tipo: 'via', texto: v.texto, modo: 'oculto', numero };
-        const rotulo = regime === 'texto' ? v.texto : String(numero);
-        const m = medir(rotulo, regime === 'texto' ? 'via' : 'numero');
+        const tipoMedida = regime === 'texto' ? 'via' : 'numero';
+        const m = medir(regime === 'texto' ? v.texto : String(numero), tipoMedida);
         const cands = candidatos(v.x, v.y, m.w, m.h, 4);
         let caixa = cands.find(c => livre(c) &&!bloqueios.some(o => cruza(c, o)) && !nucleos.some(o => cobreNo(c, o)));
         let modo = regime === 'texto' ? 'texto' : 'numero', de = null;
         if (!caixa) { const cc = naCalha(v, m.w, m.h, bloqueios); if (cc) { caixa = cc; modo = 'calha'; de = { x: v.x, y: v.y }; } }
         if (!caixa) return { id: v.id, tipo: 'via', texto: v.texto, modo: 'oculto', numero };
         bloqueios.push(caixa);
-        const saida = { id: v.id, tipo: 'via', texto: v.texto, rotulo, modo, numero, de, x1: caixa.x1, y1: caixa.y1, x2: caixa.x2, y2: caixa.y2, candidato: caixa.candidato };
+        // v12.67: a via na calha tambem cabe na caixa; o disco numerado (16 px) nunca e mais largo que a faixa
+        const rotulo = rotuloNaCaixa(regime === 'texto' ? v.texto : String(numero), tipoMedida, caixa, m);
+        const saida = { id: v.id, tipo: 'via', texto: v.texto, rotulo, truncado: regime === 'texto' && rotulo !== v.texto, modo, numero, de, x1: caixa.x1, y1: caixa.y1, x2: caixa.x2, y2: caixa.y2, candidato: caixa.candidato };
         if (debug) saida.candidatos = cands;
         return saida;
     });
@@ -1890,6 +2101,12 @@ function onBrainCanvasMouseMove(e) {
         hideConnectomeTooltip();
         canvas.style.cursor = 'default';
     }
+
+    // v12.67: rotulo cortado com reticencias (a calha espremeu a caixa) mostra o nome INTEIRO no title nativo do canvas
+    // — o equivalente do <title> do SVG. So os cortados: um title em todo rotulo repetiria o que ja esta escrito.
+    const cortado = ultimosRotulos.find(r => r.truncado && mouseX >= r.x1 && mouseX <= r.x2 && mouseY >= r.y1 && mouseY <= r.y2);
+    if (cortado) canvas.title = cortado.texto;
+    else if (canvas.title) canvas.removeAttribute('title');
 }
 
 // ====================================================================================================
@@ -2249,7 +2466,7 @@ function drawBrainCircuits2D(canvasAlvo, sobrescritas, congelarPulso) {
             ctx.fillStyle = cor; ctx.font = FONTE_VIA; ctx.textAlign = "center";
             ctx.fillText(v.rotulo, (v.x1 + v.x2) / 2, v.y2 - 4); ctx.textAlign = "start";
         }
-        if (!canvasAlvo) ultimosRotulos.push({ tipo: 'via', texto: v.texto, x1: v.x1, y1: v.y1, x2: v.x2, y2: v.y2 });
+        if (!canvasAlvo) ultimosRotulos.push({ tipo: 'via', id: v.id, texto: v.texto, rotulo: v.rotulo, truncado: !!v.truncado, x1: v.x1, y1: v.y1, x2: v.x2, y2: v.y2 });
     }
     // Nucleos: o no como antes; o ROTULO na caixa que a geometria decidiu (antes: x+10, sem colisao)
     const caixaDoNucleo = Object.fromEntries(layout.nucleos.map(n => [n.id, n]));
@@ -2273,8 +2490,10 @@ function drawBrainCircuits2D(canvasAlvo, sobrescritas, congelarPulso) {
                 if (cx.de) linhaDeChamada(cx.de, cx, isDark ? "rgba(255, 255, 255, 0.45)" : "rgba(15, 23, 42, 0.45)");
                 ctx.fillStyle = isSelectedNucleus ? "#38bdf8" : (isDark ? "#ffffff" : "#0f172a");
                 ctx.font = FONTE_NUCLEO;
-                ctx.fillText(n.label, cx.x1 + 3, cx.y2 - 3);
-                if (!canvasAlvo) ultimosRotulos.push({ tipo: 'nucleo', texto: n.label, x1: cx.x1, y1: cx.y1, x2: cx.x2, y2: cx.y2 });
+                // v12.67: desenha o ROTULO (cabe na caixa, com reticencias se a calha espremeu); o nome inteiro
+                // fica no title do canvas quando o mouse passa sobre o rotulo cortado (onBrainCanvasMouseMove)
+                ctx.fillText(cx.rotulo, cx.x1 + 3, cx.y2 - 3);
+                if (!canvasAlvo) ultimosRotulos.push({ tipo: 'nucleo', id: n.id, texto: n.label, rotulo: cx.rotulo, truncado: !!cx.truncado, x1: cx.x1, y1: cx.y1, x2: cx.x2, y2: cx.y2 });
             }
         } else {
             ctx.fillStyle = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)";
@@ -2415,11 +2634,11 @@ function drawBrainCircuits2D(canvasAlvo, sobrescritas, congelarPulso) {
 
 
 // ── exporta (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-export { CIRCUIT_FAMILIES, CIRCUIT_LAYER_UI, CIRCUIT_PRESETS, DIMENSOES_DE_SINTOMA, atualizarTooltipFixado,
-    brain3DGroup, brain3DNucleiMeshes, brainCircuitsData, buildWholeBrain3D, camadaFiltrada, canonicalSubTractsData,
-    circuitTargets, circuitTargetsForaDaOntologia, circuitsForTarget, definirBrain3DGroup, drawBrainCircuits2D,
-    familiasDeCamadas, hideConnectomeTooltip, limiteDaCamada, modoDeVisaoDasCamadas, neurostimProtocolsData,
-    nuclei2DFor, nucleiCatalog, nucleiClinicalData, onBrainCanvasClick, onBrainCanvasMouseMove, pathologyProfilesData,
-    showConnectomeTooltip, tractsCatalog, ultimoLayoutRotulos, ultimosRotulos, ultimosTracos,
-    update3DBrainTractsVisibility };
+export { CIRCUIT_FAMILIES, CIRCUIT_LAYER_UI, CIRCUIT_PRESETS, CIRCUIT_TOURS, DIMENSOES_DE_SINTOMA,
+    atualizarTooltipFixado, brain3DGroup, brain3DNucleiMeshes, brainCircuitsData, buildWholeBrain3D, camadaFiltrada,
+    canonicalSubTractsData, circuitTargets, circuitTargetsForaDaOntologia, circuitsForTarget, definirBrain3DGroup,
+    drawBrainCircuits2D, familiasDeCamadas, hideConnectomeTooltip, limiteDaCamada, modoDeVisaoDasCamadas,
+    neurostimProtocolsData, nuclei2DFor, nucleiCatalog, nucleiClinicalData, onBrainCanvasClick,
+    onBrainCanvasMouseMove, pathologyProfilesData, showConnectomeTooltip, tractsCatalog, ultimoLayoutRotulos,
+    ultimosRotulos, ultimosTracos, update3DBrainTractsVisibility };
 // ── fim do exporta ──

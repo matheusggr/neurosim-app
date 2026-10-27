@@ -4,7 +4,7 @@
 //   • HTML e manifest: NETWORK-FIRST (o usuário sempre recebe a versão mais nova quando há rede;
 //     cai para o cache só quando estiver offline). Isso evita o bug de "versão presa no cache".
 //   • Vendor (three.js), ícones e demais assets: CACHE-FIRST com atualização em segundo plano.
-const APP_VERSION = '12.66.1';
+const APP_VERSION = '12.76.2';
 const CACHE_NAME = 'neurosim-pro-v' + APP_VERSION;
 const APP_SHELL = [
     './',

@@ -1,7 +1,7 @@
 // ── módulos (GERADO por scripts/mapa-modulos.mjs --escrever; não edite à mão) ──
-import '../data.js?v=12.66.1';   // primeiro: garante a ordem de avaliação dos scripts clássicos
-import { APP_VERSION } from '../data.js?v=12.66.1';
-import { store } from '../store.js?v=12.66.1';
+import '../data.js?v=12.76.2';   // primeiro: garante a ordem de avaliação dos scripts clássicos
+import { APP_VERSION } from '../data.js?v=12.76.2';
+import { store } from '../store.js?v=12.76.2';
 // ── fim dos módulos ──
 /*
  * DOMINIO PSICOEDUCACAO — um palco inteiro num arquivo so (decisao D3 do autor, "pastas por dominio").
